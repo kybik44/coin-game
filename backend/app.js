@@ -4,10 +4,10 @@ app.use((req, res, next) => {
         'Content-Security-Policy',
         "default-src 'self' https: 'unsafe-inline' 'unsafe-eval' data: blob:; " +
         "script-src 'self' 'unsafe-inline' 'unsafe-eval' https: data: blob:; " +
-        "style-src 'self' 'unsafe-inline' https:; " +
+        "style-src 'self' 'unsafe-inline' https: fonts.googleapis.com; " +
+        "font-src 'self' https: fonts.gstatic.com data:; " +
         "img-src 'self' data: https: http:; " +
-        "font-src 'self' https: data:; " +
-        "connect-src 'self' https: wss:; " +
+        "connect-src 'self' https: wss: http://89.104.70.115:3000; " +
         "worker-src 'self' blob:; " +
         "frame-src 'self' https:;"
     );
@@ -16,9 +16,17 @@ app.use((req, res, next) => {
 
 // CORS middleware
 app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    const allowedOrigins = ['http://morevault.space', 'https://physically-ethical-pelican.ngrok-free.app'];
+    const origin = req.headers.origin;
+    
+    if (allowedOrigins.includes(origin)) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+    }
+    
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    
     if (req.method === 'OPTIONS') {
         return res.sendStatus(200);
     }
