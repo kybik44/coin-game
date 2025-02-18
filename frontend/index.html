@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+
+    <meta name="format-detection" content="telephone=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Тапалка</title>
+    <link rel="stylesheet" href="styles.css" />
+
+    <script src="shared/js/api.js"></script>
+    <style>
+      .stories-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1000;
+        display: none;
+      }
+
+      .story {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .story.active {
+        opacity: 1;
+      }
+
+      .story img {
+        width: 100%;
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: cover;
+      }
+
+      .story-progress {
+        position: absolute;
+        top: 20px;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        display: flex;
+        padding: 0 10px;
+        gap: 4px;
+        width: 95vw;
+        z-index: 1000;
+      }
+
+      .progress-bar {
+        flex: 1;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 2px;
+        overflow: hidden;
+        z-index: 1000;
+      }
+
+      .progress-fill {
+        width: 0;
+        height: 100%;
+        background: white;
+        transform-origin: left;
+        will-change: width;
+      }
+
+      .story-navigation {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        z-index: 1000;
+      }
+
+      .nav-area {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        position: absolute;
+        top: 0;
+      }
+
+      .nav-area.prev {
+        width: 30%;
+        justify-content: flex-start;
+        padding-left: 15px;
+        left: 0;
+      }
+
+      .nav-area.next {
+        width: 70%;
+        justify-content: flex-end;
+        padding-right: 15px;
+        right: 0;
+      }
+
+      .nav-button {
+        position: absolute;
+        bottom: 20px;
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+
+      .nav-button:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      .nav-button svg {
+        width: 24px;
+        height: 24px;
+        fill: white;
+      }
+
+      .nav-button.prev {
+        transform: rotate(180deg);
+        left: 15px;
+      }
+
+      .nav-button.next {
+        right: 15px;
+      }
+
+      /* Скрываем кнопку "назад" на первом сторис */
+      .story[data-index="0"].active ~ .story-navigation .nav-button.prev {
+        display: none;
+      }
+
+      /* Скрываем кнопку "вперед" на последнем сторис
+      .story[data-index="2"].active ~ .story-navigation .nav-button.next {
+        display: none;
+      } */
+    </style>
+  </head>
+  <body>
+    <div id="preloader" class="preloader">
+      <img src="images/preloader-bg.png" alt="Loading..." />
+      <div class="spinner"></div>
+    </div>
+
+    <div id="stories" class="stories-container">
+      <div class="story-progress">
+        <div class="progress-bar"><div class="progress-fill"></div></div>
+        <div class="progress-bar"><div class="progress-fill"></div></div>
+        <div class="progress-bar"><div class="progress-fill"></div></div>
+      </div>
+      <div class="story" data-index="0">
+        <img src="images/stories1.png" alt="Story 1" />
+      </div>
+      <div class="story" data-index="1">
+        <img src="images/stories2.png" alt="Story 2" />
+      </div>
+      <div class="story" data-index="2">
+        <img src="images/stories3.png" alt="Story 3" />
+      </div>
+      <div class="story-navigation">
+        <div class="nav-area prev">
+          <div class="nav-button prev">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"
+              />
+            </svg>
+          </div>
+        </div>
+        <div class="nav-area next">
+          <div class="nav-button next">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"
+              />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Функция для проверки загрузки всех необходимых компонентов
+      function checkDependencies() {
+        console.log("[Index] Checking dependencies...");
+        return {
+          telegram: !!window.Telegram?.WebApp,
+          telegramManager: !!window.TelegramManager,
+          apiConfig: !!window.API_CONFIG,
+        };
+      }
+
+      // Функция ожидания загрузки зависимостей
+      function waitForDependencies(maxAttempts = 10) {
+        return new Promise((resolve, reject) => {
+          let attempts = 0;
+
+          const check = () => {
+            attempts++;
+            console.log(`[Index] Dependency check attempt ${attempts}`);
+
+            const deps = checkDependencies();
+            console.log("[Index] Dependencies status:", deps);
+
+            if (deps.telegram && deps.telegramManager && deps.apiConfig) {
+              resolve(true);
+              return;
+            }
+
+            if (attempts >= maxAttempts) {
+              reject(new Error("Dependencies not loaded"));
+              return;
+            }
+
+            setTimeout(check, 100);
+          };
+
+          check();
+        });
+      }
+
+      // Функция для управления сторис
+      class StoriesManager {
+        constructor() {
+          this.container = document.getElementById("stories");
+          this.stories = Array.from(this.container.querySelectorAll(".story"));
+          this.progressBars = Array.from(
+            this.container.querySelectorAll(".progress-fill")
+          );
+          this.currentIndex = 0;
+          this.storyDuration = 6000;
+          this.timer = null;
+          this.startTime = null;
+          this.animationFrame = null;
+
+          // Добавляем обработчики для областей навигации
+          const prevArea = this.container.querySelector(".nav-area.prev");
+          const nextArea = this.container.querySelector(".nav-area.next");
+
+          // Обработчик для области "назад" (левая часть)
+          prevArea.addEventListener("click", (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            const target = e.target;
+            // Проверяем, был ли клик по кнопке
+            if (target.closest(".nav-button")) {
+              console.log("[Stories] Prev button click");
+              this.prevStory();
+            } else {
+              console.log("[Stories] Prev area click");
+              this.prevStory();
+            }
+          });
+
+          // Обработчик для области "вперед" (правая часть)
+          nextArea.addEventListener("click", (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            const target = e.target;
+            // Проверяем, был ли клик по кнопке
+            if (target.closest(".nav-button")) {
+              console.log("[Stories] Next button click");
+              this.nextStory();
+            } else {
+              console.log("[Stories] Next area click");
+              this.nextStory();
+            }
+          });
+        }
+
+        async shouldShowStories() {
+          try {
+            const userId = TelegramManager.getUserId();
+            if (!userId) return false;
+
+            const response = await fetch(
+              `${API_CONFIG.BASE_URL}/api/balance/${userId}`
+            );
+            const data = await response.json();
+
+            console.log("[Stories] Check result:", data);
+
+            // Проверяем только по флагу isNew из ответа сервера
+            return data.isNew;
+          } catch (error) {
+            console.error("[Stories] Error checking status:", error);
+            return false;
+          }
+        }
+
+        start() {
+          this.container.style.display = "block";
+          this.showStory(0);
+        }
+
+        showStory(index) {
+          if (index < 0 || index >= this.stories.length) {
+            console.error("[Stories] Invalid story index:", index);
+            return;
+          }
+
+          console.log("[Stories] Showing story:", index);
+          this.clearTimers();
+          this.currentIndex = index;
+
+          // Убираем активный класс у всех сторис
+          this.stories.forEach((story) => story.classList.remove("active"));
+
+          // Показываем текущий сторис
+          this.stories[index].classList.add("active");
+
+          // Обновляем все прогресс-бары
+          this.updateProgressBars(index);
+
+          // Запускаем анимацию текущего прогресс-бара
+          this.animateProgress(index);
+        }
+
+        clearTimers() {
+          if (this.timer) {
+            clearTimeout(this.timer);
+            this.timer = null;
+          }
+          if (this.animationFrame) {
+            cancelAnimationFrame(this.animationFrame);
+            this.animationFrame = null;
+          }
+          this.startTime = null;
+        }
+
+        updateProgressBars(currentIndex) {
+          this.progressBars.forEach((bar, index) => {
+            if (index < currentIndex) {
+              bar.style.width = "100%";
+            } else if (index > currentIndex) {
+              bar.style.width = "0%";
+            } else {
+              bar.style.width = "0%";
+            }
+          });
+        }
+
+        animateProgress(index) {
+          this.clearTimers();
+          this.startTime = performance.now();
+
+          const animate = (currentTime) => {
+            if (!this.startTime) return; // Анимация остановлена
+
+            const elapsed = currentTime - this.startTime;
+            const progress = Math.min(
+              100,
+              (elapsed / this.storyDuration) * 100
+            );
+
+            // Обновляем только прогресс текущей истории
+            if (index === this.currentIndex) {
+              this.progressBars[index].style.width = `${progress}%`;
+            }
+
+            if (progress < 100 && index === this.currentIndex) {
+              this.animationFrame = requestAnimationFrame(animate);
+            } else if (progress >= 100 && index === this.currentIndex) {
+              this.nextStory();
+            }
+          };
+
+          // Запускаем анимацию
+          this.animationFrame = requestAnimationFrame(animate);
+        }
+
+        nextStory() {
+          console.log(
+            "[Stories] Next story called, current index:",
+            this.currentIndex
+          );
+
+          // Проверяем, не последняя ли это история
+          if (this.currentIndex < this.stories.length - 1) {
+            // Если не последняя, показываем следующую
+            const nextIndex = this.currentIndex + 1;
+            console.log("[Stories] Moving to next story:", nextIndex);
+            this.showStory(nextIndex);
+          } else {
+            // Если последняя, завершаем просмотр
+            console.log("[Stories] Reached last story, calling finish");
+            this.finish();
+          }
+        }
+
+        prevStory() {
+          console.log(
+            "[Stories] Previous story called, current index:",
+            this.currentIndex
+          );
+
+          if (this.currentIndex > 0) {
+            const prevIndex = this.currentIndex - 1;
+            console.log("[Stories] Moving to previous story:", prevIndex);
+            this.showStory(prevIndex);
+          }
+        }
+
+        finish() {
+          console.log("[Stories] Starting finish process");
+          this.clearTimers();
+
+          const userId = TelegramManager.getUserId();
+          if (!userId) {
+            console.error("[Stories] No user ID available");
+            this.redirectToRewards();
+            return;
+          }
+
+          console.log("[Stories] Marking stories as shown for user:", userId);
+          fetch(`${API_CONFIG.BASE_URL}/api/stories/mark-shown`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ userId }),
+          })
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+              }
+              return response.json();
+            })
+            .then((data) => {
+              console.log(
+                "[Stories] Successfully marked stories as shown:",
+                data
+              );
+              this.redirectToRewards();
+            })
+            .catch((error) => {
+              console.error("[Stories] Error marking stories as shown:", error);
+              this.redirectToRewards();
+            });
+        }
+
+        redirectToRewards() {
+          console.log("[Stories] Redirecting to rewards page");
+          this.container.style.display = "none";
+          document.getElementById("preloader").style.display = "flex";
+
+          // Добавляем небольшую задержку перед редиректом
+          setTimeout(() => {
+            console.log("[Stories] Executing redirect");
+            window.location.href = "screens/rewards/rewards.html";
+          }, 100);
+        }
+      }
+
+      // Основная логика
+      async function initApp() {
+        console.log("[Index] Starting app initialization...");
+
+        try {
+          await waitForDependencies();
+          console.log("[Index] Dependencies loaded successfully");
+
+          const initResult = await TelegramManager.init();
+          console.log("[Index] TelegramManager init result:", initResult);
+
+          if (!initResult) {
+            throw new Error("Failed to initialize Telegram WebApp");
+          }
+
+          // Получаем userId для логирования
+          const userId = TelegramManager.getUserId();
+          console.log("[Index] Current user ID:", userId);
+
+          // Инициализируем и проверяем необходимость показа сторис
+          const storiesManager = new StoriesManager();
+          const shouldShowStories = await storiesManager.shouldShowStories();
+          console.log("[Index] Should show stories:", shouldShowStories);
+
+          if (shouldShowStories) {
+            console.log("[Index] Starting stories...");
+            document.getElementById("preloader").style.display = "none";
+            storiesManager.start();
+          } else {
+            console.log("[Index] Skipping stories...");
+            const startParam =
+              window.Telegram?.WebApp?.initDataUnsafe?.start_param;
+            if (startParam) {
+              console.log("[Index] Processing referral code:", startParam);
+              await TelegramManager.checkReferral(startParam);
+            }
+
+            console.log("[Index] Redirecting to rewards page...");
+            window.location.href = "screens/rewards/rewards.html";
+          }
+        } catch (error) {
+          console.error("[Index] Initialization error:", error);
+          window.location.href = "screens/rewards/rewards.html";
+        }
+      }
+
+      // Запускаем инициализацию при загрузке DOM
+      document.addEventListener("DOMContentLoaded", initApp);
+    </script>
+    <script src="script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,769 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+.preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  background: #203EBD;
+}
+.preloader img{
+  height: 100%;
+  width: auto;
+}
+
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  position: absolute;
+  top:calc(50% - 25px);
+  left:calc(50% - 25px);
+  z-index: 10000;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.hidden {
+  display: none !important;
+}
+
+.main-container {
+  height: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Используем кастомную переменную для высоты на мобильных устройствах */
+@supports (height: 100dvh) {
+  .main-container {
+    height: 100dvh;
+  }
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(180deg, #002499, #003bff);
+  color: white;
+  text-align: center;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+.header {
+  height: 63px;
+  background-color: #3b68ff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 23px;
+  left: 0;
+  width: 100%;
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+}
+
+.roadmap-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.roadmap-indicator {
+  width: 2.7px;
+  height: 27px;
+  background-color: #0326a2;
+  border-radius: 0;
+}
+
+.roadmap-text {
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.roadmap-button {
+  width: 77px;
+  height: 26px;
+  background-color: #0327a5;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.arrow-right {
+  width: 32px;
+  height: 2px;
+  background-color: white;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: pointer;
+}
+
+.arrow-right::after {
+  content: "";
+  position: absolute;
+  right: -4px;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+  width: 5px;
+  height: 5px;
+  border-top: 2px solid white;
+  border-right: 2px solid white;
+}
+
+.balance {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.balance img {
+  width: 30px;
+  height: 30px;
+}
+
+.main-title {
+  font-size: calc(14px + 10 * (100vw / 1280));
+  font-weight: 600;
+  font-family: "Inter", sans-serif;
+  width: 100%;
+  text-align: center;
+  z-index: 10;
+}
+
+.balloon-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70%;
+  max-width: 560px;
+  z-index: 5;
+}
+
+.balloon {
+  width: 100%;
+  padding-bottom: 100%;
+  position: relative;
+  cursor: pointer;
+}
+
+.balloon img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: opacity 0.3s ease;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  will-change: opacity;
+}
+
+.balloon-closed {
+  opacity: 1;
+}
+
+.balloon-open {
+  opacity: 0;
+}
+
+.balloon.pressed .balloon-closed {
+  opacity: 0;
+}
+
+.balloon.pressed .balloon-open {
+  opacity: 1;
+}
+
+.balloon:active {
+  transform: none;
+}
+
+.timer {
+  position: fixed;
+  top: 1000px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 18px;
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  width: 100%;
+  text-align: center;
+  z-index: 10;
+}
+
+.nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #3b68ff;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  box-sizing: border-box;
+  gap: 12px;
+}
+
+.nav img {
+  max-width: 100%;
+}
+
+.nav-item {
+  padding: 0;
+  margin: 20px 0 0 0;
+}
+
+.nav button {
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 4vw;
+  border: none;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.nav button img {
+  width: 9vw;
+  height: 9vw;
+  filter: invert(57%) sepia(93%) saturate(1245%) hue-rotate(206deg)
+    brightness(103%) contrast(96%);
+  transition: all 0.2s ease;
+}
+
+.nav button:hover {
+  background: transparent;
+}
+
+.nav button:active {
+  transform: none;
+}
+
+.screen {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 600px;
+}
+
+.screen.active {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.fireworks-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  display: none;
+}
+
+.firework {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  border-radius: 50%;
+  animation: explode 2s ease-out forwards;
+}
+
+@keyframes explode {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--x), var(--y)) scale(0.5);
+    opacity: 0;
+  }
+}
+
+.button {
+  background: white;
+  color: #0057ff;
+  font-weight: bold;
+  font-size: 4vw;
+  padding: 2vw 4vw;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.button:disabled {
+  background: #cccccc;
+  color: #777777;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.button:hover:enabled {
+  transform: scale(1.05);
+}
+
+.referral-link {
+  background: #f9fbe7;
+  padding: 10px;
+  border-radius: 10px;
+  margin-top: 10px;
+  display: inline-block;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: #333;
+  font-weight: bold;
+  text-align: center;
+  font-size: 4vw;
+}
+
+.referral-link {
+  text-decoration: none;
+}
+
+.center-container {
+  display: none;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 0;
+  border: none;
+  background: transparent !important;
+  color: #b8c8ff;
+  cursor: pointer;
+  padding: 0;
+  position: relative;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.nav-item img {
+  width: 37px;
+  height: 37px;
+  margin-bottom: 2px;
+  filter: invert(57%) sepia(93%) saturate(1245%) hue-rotate(206deg)
+    brightness(103%) contrast(96%);
+  transition: all 0.2s ease;
+}
+
+.nav-item span {
+  font-size: 12px;
+  font-weight: 500;
+  color: #b8c8ff;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.nav-item.active {
+  color: white;
+}
+
+.nav-item.active img {
+  filter: brightness(0) invert(1);
+}
+
+.nav-item.active span {
+  color: white;
+}
+
+.nav-item:active,
+.nav-item:focus {
+  background: transparent !important;
+  outline: none;
+}
+
+/* Общий стиль для второго экрана */
+.game-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Изображение стола */
+.background-object {
+  width: 165%;
+  height: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+
+/* Текст поверх изображения */
+.overlay-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: white;
+  text-shadow: 0px 0px 5px rgba(0, 0, 0, 0.7);
+  z-index: 2;
+}
+
+.overlay-text h1 {
+  font-size: 24px;
+  margin: 0;
+}
+
+.overlay-text p {
+  font-size: 18px;
+  margin: 5px 0 20px;
+}
+
+/* Карты */
+#cards-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 26px;
+  justify-items: center;
+  position: relative;
+  z-index: 2;
+  width: 80%;
+  margin: 0 auto;
+}
+
+.card {
+  width: 130px;
+  height: 182px;
+  position: relative;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transition: transform 0.6s;
+  border-radius: 13px;
+}
+
+.card.flipped {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 13px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-front {
+  background: url("images/card-back.png") no-repeat center center;
+  background-size: cover;
+}
+
+.card-back {
+  background-size: cover;
+  background-position: center;
+  transform: rotateY(180deg);
+}
+
+/* Скрытый экран */
+.hidden {
+  display: none;
+}
+
+.balloon.loading {
+  opacity: 0.7;
+  cursor: not-allowed;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Обновляем стили для кнопки Gamble */
+#start-game-button {
+  position: absolute;
+  bottom: 200px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  background: white;
+  color: #0057ff;
+  font-weight: bold;
+  font-size: 20px;
+  padding: 15px 40px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+#start-game-button:hover {
+  transform: translateX(-50%) scale(1.05);
+}
+
+#start-game-button:active {
+  transform: translateX(-50%) scale(0.95);
+}
+
+/* Стили для баннера казино */
+.casino-banner {
+  position: absolute;
+  width: 100%;
+  height: auto;
+  top: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+/* Обновляем стили для карточной игры */
+#high-stakes-game {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(180deg, #002499, #003bff);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+}
+
+#high-stakes-game h2 {
+  color: white;
+  font-family: "Inter", sans-serif;
+  font-size: 31px;
+  margin-bottom: 30px;
+}
+
+#high-stakes-game.hidden {
+  display: none;
+}
+
+#game-result {
+  font-size: 23px;
+  margin-top: 26px;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+}
+
+.balance-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  z-index: 10;
+  font-family: "Inter", sans-serif;
+}
+
+.balance-amount {
+  font-size: 64px;
+  font-weight: bold;
+  color: white;
+}
+
+.vai-icon {
+  width: 38px;
+  height: auto;
+  filter: brightness(0) invert(1);
+}
+
+.balance-currency {
+  display: flex;
+  align-items: center;
+}
+
+.balance-currency svg {
+  width: 38px;
+  height: auto;
+}
+
+/* Обновляем стили для контейнера первого экрана */
+#screen-1 {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+}
+
+/* Стили для второго экрана */
+#screen-2 {
+  display: none !important;
+}
+
+#screen-2.active {
+  display: block !important;
+}
+
+.game-banner {
+  width: calc(100% - 20px);
+  max-width: 387px;
+  height: 129px;
+  background: #ff9900;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  box-sizing: border-box;
+}
+
+.banner-balloon-container {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.banner-balloon {
+  width: 75px;
+  height: 112px;
+  object-fit: contain;
+  filter: drop-shadow(3px 3px 7px rgba(0, 0, 0, 0.25));
+}
+
+.banner-content-container {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  margin-left: 22px;
+}
+
+.banner-text-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.banner-text {
+  color: black;
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  margin: 0;
+  text-align: left;
+}
+
+.banner-button {
+  width: 235px;
+  height: 27px;
+  background: #01277a;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-family: "Inter", sans-serif;
+  font-size: 16px;
+}
+
+.game-cost {
+  text-align: center;
+  margin-top: 3px;
+}
+
+.cost-text {
+  color: white;
+  font-family: "Inter", sans-serif;
+  font-size: 17px;
+  margin-bottom: 2.5px;
+  display: block;
+}
+
+.cost-amount {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  font-size: 60px;
+  font-weight: bold;
+  color: white;
+}
+
+.cost-vai-icon {
+  width: 36px;
+  height: 22px;
+  filter: brightness(0) invert(1);
+}
+
+.casino-table {
+  width: 389px;
+  height: 229px;
+  object-fit: cover;
+  margin-top: -20px;
+}
+
+.gamble-button {
+  width: 157px;
+  height: 48px;
+  background: white;
+  border-radius: 14px;
+  border: none;
+  color: #0138ef;
+  font-family: "Inter", sans-serif;
+  font-size: 27px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#high-stakes-start {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding-top: 70px;
+  height: 100vh;
+  box-sizing: border-box;
+  gap: 25px;
+}

@@ -1,0 +1,244 @@
+/* Скопируйте содержимое из https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.css */ 
+
+.tc-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100000;
+}
+
+.tc-modal__overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.tc-modal__content {
+  position: relative;
+  background: var(--tg-theme-bg-color, #ffffff);
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 90%;
+  max-height: 90%;
+  overflow: auto;
+}
+
+.tc-modal__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 24px;
+  height: 24px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--tg-theme-text-color, #000000);
+}
+
+.tc-modal__close svg {
+  width: 24px;
+  height: 24px;
+}
+
+.tc-modal__header {
+  margin-bottom: 24px;
+}
+
+.tc-modal__title {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--tg-theme-text-color, #000000);
+}
+
+.tc-wallet-item {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-bottom: 8px;
+  border: 1px solid transparent;
+}
+
+.tc-wallet-item:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.tc-wallet-item__icon {
+  width: 40px;
+  height: 40px;
+  margin-right: 12px;
+  border-radius: 12px;
+}
+
+.tc-wallet-item__name {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--tg-theme-text-color, #000000);
+}
+
+.tc-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  border-radius: 8px;
+  border: none;
+  background: var(--tg-theme-button-color, #0088cc);
+  color: var(--tg-theme-button-text-color, #ffffff);
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.tc-button:hover {
+  opacity: 0.9;
+}
+
+.tc-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tc-button__icon {
+  margin-right: 8px;
+  width: 24px;
+  height: 24px;
+}
+
+.tc-connect-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  border-radius: 8px;
+  border: none;
+  background: var(--tg-theme-button-color, #0088cc);
+  color: var(--tg-theme-button-text-color, #ffffff);
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+  transition: opacity 0.2s;
+}
+
+.tc-connect-button:hover {
+  opacity: 0.9;
+}
+
+.tc-connect-button__icon {
+  margin-right: 8px;
+  width: 24px;
+  height: 24px;
+}
+
+.tc-notification {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: var(--tg-theme-bg-color, #ffffff);
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 100001;
+  max-width: 90%;
+  display: flex;
+  align-items: center;
+}
+
+.tc-notification__icon {
+  margin-right: 12px;
+  width: 24px;
+  height: 24px;
+}
+
+.tc-notification__content {
+  flex: 1;
+}
+
+.tc-notification__title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 4px;
+  color: var(--tg-theme-text-color, #000000);
+}
+
+.tc-notification__message {
+  font-size: 14px;
+  margin: 0;
+  color: var(--tg-theme-hint-color, #999999);
+}
+
+.tc-qr-code {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px;
+}
+
+.tc-qr-code__image {
+  width: 256px;
+  height: 256px;
+  margin-bottom: 16px;
+}
+
+.tc-qr-code__text {
+  font-size: 14px;
+  text-align: center;
+  color: var(--tg-theme-hint-color, #999999);
+  max-width: 256px;
+}
+
+/* Анимации */
+@keyframes tc-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes tc-slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.tc-modal {
+  animation: tc-fade-in 0.2s ease-out;
+}
+
+.tc-notification {
+  animation: tc-slide-up 0.3s ease-out;
+}
+
+/* Иконка закрытия */
+.tc-icon-close {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.tc-icon-close path {
+  d: path('M18 6L6 18M6 6l12 12');
+} 

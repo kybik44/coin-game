@@ -1,0 +1,21 @@
+{
+  "name": "coin-game",
+  "version": "1.0.0",
+  "description": "",
+  "main": "backend/server.js",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development node backend/server.js",
+    "start": "cross-env NODE_ENV=production node backend/server.js",
+    "clean": "cross-env NODE_ENV=development node scripts/clean-db.js",
+    "reset": "npm run clean && npm run dev",
+    "setup-db": "node backend/setupDb.js"
+  },
+  "dependencies": {
+    "@tonconnect/sdk": "^3.0.6",
+    "@tonconnect/ui": "^2.0.11",
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
+    "express": "^4.17.1",
+    "sqlite3": "^5.1.7"
+  }
+}

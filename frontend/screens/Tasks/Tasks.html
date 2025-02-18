@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <meta name="format-detection" content="telephone=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Roadmap</title>
+    <link rel="stylesheet" href="../../shared/styles/common.css" />
+    <link rel="stylesheet" href="Tasks.css" />
+  </head>
+  <body>
+    <div id="main-container" class="main-container">
+      <div class="header">
+        <div class="roadmap-link">
+          <span class="roadmap-text"
+            ><span class="roadmap-line">|</span> Check VAI's roadmap</span
+          >
+        </div>
+        <a href="../roadmap/roadmap.html" class="roadmap-link aa"
+          ><svg
+            width="70"
+            height="10"
+            viewBox="0 0 70 18"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M70 2 L78 10 L70 18"
+              stroke="white"
+              stroke-width="2"
+              fill="none"
+            />
+            <line
+              x1="2"
+              y1="10"
+              x2="78"
+              y2="10"
+              stroke="white"
+              stroke-width="2"
+            />
+          </svg>
+        </a>
+      </div>
+
+      <div class="referrals-screen">
+        <h1 class="main-title">TASKS</h1>
+        <p class="subtitle">YOU <span>DO </span>- WE <span>PAY</span></p>
+
+        <div class="button-container tabs">
+          <button
+            id="button1"
+            class="tab-button tab-active"
+            onclick="showBlock1()"
+          >
+            VAI's tasks
+          </button>
+          <button
+            id="button2"
+            class="tab-button tab-inactive"
+            onclick="showBlock2()"
+          >
+            Partners
+          </button>
+        </div>
+
+        <div id="block1" class="block active">
+          <div class="lineTask">
+            <div class="firstHalf">
+              <img src="../../images/1.png" />
+              <div class="left">
+                <span>Join Community</span>
+                <span class="grey">+ 500 VAI</span>
+              </div>
+            </div>
+            <button
+              data-task-type="join_community"
+              onclick="handleTaskClick(this, 'https://t.me/getvaitoken', 'join_community')"
+            >
+              Start
+            </button>
+          </div>
+          <div class="lineTask">
+            <div class="firstHalf">
+              <img src="../../images/img_1.png" />
+              <div class="left">
+                <span>Follow Twitter</span>
+                <span class="grey">+ 500 VAI</span>
+              </div>
+            </div>
+            <button
+              data-task-type="follow_twitter"
+              onclick="handleTaskClick(this, 'https://x.com/getvaiii', 'follow_twitter')"
+            >
+              Start
+            </button>
+          </div>
+          <div class="lineTask">
+            <div class="firstHalf">
+              <img src="../../images/img_2.png" />
+              <div class="left">
+                <span>Add Stickerpack</span>
+                <span class="grey">+ 500 VAI</span>
+              </div>
+            </div>
+            <button
+              data-task-type="add_stickerpack"
+              onclick="handleTaskClick(this, 'https://t.me/getvaitoken', 'add_stickerpack')"
+            >
+              Start
+            </button>
+          </div>
+          <div class="lineTask">
+            <div class="firstHalf">
+              <img src="../../images/img_3.png" />
+              <div class="left">
+                <span>View Website</span>
+                <span class="grey">+ 500 VAI</span>
+              </div>
+            </div>
+            <button
+              data-task-type="view_website"
+              onclick="handleTaskClick(this, 'https://getvault.space', 'view_website')"
+            >
+              Start
+            </button>
+          </div>
+          <div class="lineTask">
+            <div class="firstHalf">
+              <img src="../../images/img_4.png" />
+              <div class="left">
+                <span>Pass the test</span>
+                <span class="grey">+ 500 VAI</span>
+              </div>
+            </div>
+            <button
+              data-task-type="pass_test"
+              onclick="handleTaskClick(this, 'https://t.me/getvaitoken', 'pass_test')"
+            >
+              Start
+            </button>
+          </div>
+          <div class="lineTask">
+            <div class="firstHalf">
+              <img src="../../images/img_5.png" />
+              <div class="left">
+                <span>React on BLUM 🔥 🚀 💔</span>
+                <span class="grey">+ 500 VAI</span>
+              </div>
+            </div>
+            <button
+              data-task-type="react_on_blum"
+              onclick="handleTaskClick(this, 'https://t.me/getvaitoken', 'react_on_blum')"
+            >
+              Start
+            </button>
+          </div>
+        </div>
+
+        <div id="block2" class="block">
+          <div class="lineTask">
+            <div class="firstHalf">
+              <img src="../../images/img_6.png" />
+              <div class="left">
+                <span>Join LUCK</span>
+                <span class="grey">+ 1000 VAI</span>
+              </div>
+            </div>
+            <button
+              data-task-type="join_luck"
+              onclick="handleTaskClick(this, 'https://t.me/getvaitoken', 'join_luck')"
+            >
+              Follow
+            </button>
+          </div>
+          <div class="lineTask">
+            <div class="firstHalf">
+              <img src="../../images/img_8.png" />
+              <div class="left">
+                <span>Join APHBT</span>
+                <span class="grey">+ 1000 VAI</span>
+              </div>
+            </div>
+            <button
+              data-task-type="join_aphbt"
+              onclick="handleTaskClick(this, 'https://t.me/getvaitoken', 'join_aphbt')"
+            >
+              Follow
+            </button>
+          </div>
+          <div class="lineTask">
+            <div class="firstHalf">
+              <img src="../../images/icon1.png" />
+              <div class="left">
+                <span>Join Chloe</span>
+                <span class="grey">+ 1000 VAI</span>
+              </div>
+            </div>
+            <button
+              data-task-type="join_chloe"
+              onclick="handleTaskClick(this, 'https://t.me/getvaitoken', 'join_chloe')"
+            >
+              Follow
+            </button>
+          </div>
+          <div class="lineTask">
+            <div class="firstHalf">
+              <img src="../../images/icon2.png" />
+              <div class="left">
+                <span>Join Suricat</span>
+                <span class="grey">+ 1000 VAI</span>
+              </div>
+            </div>
+            <button
+              data-task-type="join_suricat"
+              onclick="handleTaskClick(this, 'https://t.me/getvaitoken', 'join_suricat')"
+            >
+              Follow
+            </button>
+          </div>
+          <div class="lineTask">
+            <div class="firstHalf">
+              <img src="../../images/icon3.png" />
+              <div class="left">
+                <span>Join Benzin</span>
+                <span class="grey">+ 1000 VAI</span>
+              </div>
+            </div>
+            <button
+              data-task-type="join_benzin"
+              onclick="handleTaskClick(this, 'https://t.me/getvaitoken', 'join_benzin')"
+            >
+              Follow
+            </button>
+          </div>
+          <div class="lineTask">
+            <div class="firstHalf">
+              <img src="../../images/img_5.png" />
+              <div class="left">
+                <span>Join Blum</span>
+                <span class="grey">+ 1000 VAI</span>
+              </div>
+            </div>
+            <button
+              data-task-type="join_blum"
+              onclick="handleTaskClick(this, 'https://t.me/getvaitoken', 'join_blum')"
+            >
+              Follow
+            </button>
+          </div>
+        </div>
+        <button
+          class="white-button back-button"
+          onclick="window.history.back()"
+        >
+          Back to menu
+        </button>
+      </div>
+    </div>
+    <script>
+      function showBlock1() {
+        document.getElementById("block1").classList.add("active");
+        document.getElementById("block2").classList.remove("active");
+
+        // Изменение стилей кнопок
+        document.getElementById("button1").classList.add("tab-active");
+        document.getElementById("button1").classList.remove("tab-inactive");
+
+        document.getElementById("button2").classList.add("tab-inactive");
+        document.getElementById("button2").classList.remove("tab-active");
+      }
+
+      function showBlock2() {
+        document.getElementById("block2").classList.add("active");
+        document.getElementById("block1").classList.remove("active");
+
+        // Изменение стилей кнопок
+        document.getElementById("button2").classList.add("tab-active");
+        document.getElementById("button2").classList.remove("tab-inactive");
+
+        document.getElementById("button1").classList.add("tab-inactive");
+        document.getElementById("button1").classList.remove("tab-active");
+      }
+    </script>
+    <script>
+      function handleTaskClick(button, url, taskType) {
+        if (button && button.classList) {
+          button.classList.add("use");
+          button.disabled = true;
+
+          // Открываем ссылку в новом окне
+          window.open(url, "_blank");
+        } else {
+          console.error("Кнопка не определена");
+        }
+      }
+    </script>
+    <script src="../../shared/js/api.js"></script>
+    <script src="../../shared/js/components.js"></script>
+    <script src="Tasks.js"></script>
+  </body>
+</html>

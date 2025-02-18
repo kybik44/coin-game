@@ -1,0 +1,6 @@
+[
+  {
+    "type": "sqlite",
+    "path": "e:\\Work\\coin-game-finall\\backend\\database.db"
+  }
+]

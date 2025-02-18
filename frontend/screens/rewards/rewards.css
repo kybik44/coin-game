@@ -1,0 +1,147 @@
+/* Стили для экрана rewards */
+.rewards-screen {
+    min-height: 100vh;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+    position: relative;
+    padding-top: 90px;
+}
+
+.main-title {
+    font-size: calc(18px + 10 * (100vw / 1280));
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    color: #FFFFFF;
+    text-align: center;
+}
+
+.balloon-container {
+    width: 88vw;
+    max-width: 400px;
+    height: calc(100vh - 360px);
+    aspect-ratio: 1;
+    transform: translateY(10px);
+    margin-left: 10px;
+}
+
+.balance-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.balanceAmount {
+    font-size: 56px;
+    line-height: 68px;
+    font-weight: 700;
+    color: #FFFFFF;
+}
+
+.vai-icon {
+    width: 40px;
+    height: 40px;
+}
+
+.balloon {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.balloon span {
+    transform: translateY(5px);
+}
+
+.balloon img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: opacity 0.3s ease;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    will-change: opacity;
+}
+
+.balloon-closed .balloon-closed {
+    opacity: 1;
+}
+
+.balloon-closed .balloon-open {
+    opacity: 0;
+}
+
+.balloon-open .balloon-closed {
+    opacity: 0;
+}
+
+.balloon-open .balloon-open {
+    opacity: 1;
+}
+
+.balloon:active {
+    transform: none;
+}
+
+.timer {
+    text-align: center;
+    color: #ffffff;
+    font-size: 16px;
+}
+
+/* Стили для фейерверков */
+.fireworks-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1000;
+    display: none;
+}
+
+.firework {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    transform: translate(var(--x), var(--y));
+    animation: explode 0.8s ease-out forwards;
+}
+
+@keyframes explode {
+    0% {
+        transform: translate(0, 0);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(var(--x), var(--y));
+        opacity: 0;
+    }
+}
+
+@media screen and (min-width: 720px){
+    .rewards-screen{
+        padding-right: 20%;
+        padding-left: 20%;
+        align-items: center;
+    }
+}
+@media screen and (min-width: 1440px){
+    .rewards-screen{
+        padding-right: 30%;
+        padding-left: 30%;
+        align-items: center;
+    }
+}

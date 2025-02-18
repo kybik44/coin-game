@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="format-detection" content="telephone=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Airdrop - VAI Game</title>
+
+    <!-- Стили -->
+    <link rel="stylesheet" href="../../shared/styles/common.css" />
+    <link rel="stylesheet" href="airdrop.css" />
+
+    <!-- Скрипты -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="../../shared/js/api.js"></script>
+    <script src="../../shared/js/balance.js"></script>
+  </head>
+  <body>
+    <div id="main-container" class="main-container">
+      <div class="header">
+        <div class="roadmap-link">
+          <span class="roadmap-text"
+            ><span class="roadmap-line">|</span> Check VAI's roadmap</span
+          >
+        </div>
+        <a href="../roadmap/roadmap.html" class="roadmap-link"
+          ><svg
+            width="70"
+            height="10"
+            viewBox="0 0 70 18"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M70 2 L78 10 L70 18"
+              stroke="white"
+              stroke-width="2"
+              fill="none"
+            />
+            <line
+              x1="2"
+              y1="10"
+              x2="78"
+              y2="10"
+              stroke="white"
+              stroke-width="2"
+            />
+          </svg>
+        </a>
+      </div>
+
+      <div class="airdrop-screen">
+        <h1 class="main-title">AIRDROP</h1>
+        <p class="subtitle">YOUR GRADE <span>JUNIOR</span></p>
+
+        <div class="stats-row">
+          <span>Users summary</span>
+          <span class="users-count">18,042 users</span>
+        </div>
+
+        <div class="stats-container">
+          <div class="leaderboard-item">
+            <div class="user-info">
+              <div class="user-avatar">
+                <img
+                  src="../../images/anonym.png"
+                  alt="User Avatar"
+                  id="current-user-avatar"
+                />
+              </div>
+              <div class="user-details">
+                <span class="user-name" id="current-user-name">Loading...</span>
+                <span class="user-balance" id="current-user-balance"
+                  >Loading...</span
+                >
+              </div>
+            </div>
+            <span class="user-position" id="current-user-position">#--</span>
+          </div>
+        </div>
+
+        <div class="leaderboard-container">
+          <!-- Лидерборд будет заполнен динамически -->
+        </div>
+
+        <div id="ton-connect"></div>
+
+      <div class="Nav">
+        <button
+          class="nav-item"
+          onclick="navigateTo('../rewards/rewards.html')"
+        >
+          <img src="../../images/rewards.svg" alt="Rewards" />
+          <span>Rewards</span>
+        </button>
+        <button
+          class="nav-item"
+          onclick="navigateTo('../high-stakes/high-stakes.html')"
+        >
+          <img src="../../images/highstakes.svg" alt="High Stakes" />
+          <span>High Stakes</span>
+        </button>
+        <button
+          class="nav-item"
+          onclick="navigateTo('../referrals/referrals.html')"
+        >
+          <img src="../../images/referrals.svg" alt="Referrals" />
+          <span>Referrals</span>
+        </button>
+        <button class="nav-item active">
+          <img src="../../images/airdrop.svg" alt="Airdrop" />
+          <span>Airdrop</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Подключаем TON Connect в конце body -->
+    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+    <script>
+      const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+        manifestUrl: `${window.location.origin}/tonconnect-manifest.json`,
+        buttonRootId: "ton-connect",
+        uiPreferences: {
+          theme:
+            window.Telegram.WebApp.colorScheme === "dark" ? "DARK" : "LIGHT",
+        },
+        walletsListConfiguration: {
+          includeWallets: [
+            {
+              name: "Telegram Web App",
+              appName: "telegram-wallet",
+              universalLink: "https://t.me/wallet",
+              bridgeUrl: "https://bridge.tonapi.io/bridge",
+              jsBridgeKey: "telegram-wallet",
+              aboutUrl: "https://wallet.tg/",
+              imageUrl: "https://wallet.tg/images/logo-288.png",
+            },
+          ],
+        },
+      });
+
+      // Настраиваем возврат в Telegram Mini App
+      tonConnectUI.uiOptions = {
+        twaReturnUrl: "https://t.me/$dev_kybik_bot/bot",
+      };
+
+      // Подписываемся на изменения состояния кошелька
+      tonConnectUI.onStatusChange((wallet) => {
+        const walletStatus = document.getElementById("wallet-status");
+        const walletAddress = document.getElementById("wallet-address");
+
+        if (wallet) {
+          console.log("Wallet connected:", wallet);
+          if (walletStatus) {
+            walletStatus.textContent = "Connected";
+            walletStatus.classList.add("connected");
+          }
+          if (walletAddress) {
+            const address = wallet.account.address;
+            walletAddress.textContent = `${address.slice(
+              0,
+              6
+            )}...${address.slice(-4)}`;
+            walletAddress.classList.add("visible");
+          }
+        } else {
+          console.log("Wallet disconnected");
+          if (walletStatus) {
+            walletStatus.textContent = "Not connected";
+            walletStatus.classList.remove("connected");
+          }
+          if (walletAddress) {
+            walletAddress.textContent = "";
+            walletAddress.classList.remove("visible");
+          }
+        }
+      });
+    </script>
+    <script src="airdrop.js"></script>
+  </body>
+</html>

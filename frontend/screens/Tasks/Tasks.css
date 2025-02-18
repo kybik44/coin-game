@@ -1,0 +1,305 @@
+.referrals-screen {
+  height: calc(100vh - 65px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+  padding: 65px 5% 0 5%;
+  position: relative;
+}
+
+.stats-container {
+  width: 100%;
+  height: auto;
+  background: #01277a;
+  border-radius: 15px;
+  padding: 15px 25px;
+  margin-bottom: 21.33px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+}
+
+.stats-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.stats-label,
+.stats-value {
+  font-size: 16px;
+  color: white;
+  font-weight: 500;
+}
+
+.referrals-list {
+  width: 100%;
+  min-height: 177px;
+  background: #01277a;
+  border-radius: 15px;
+  padding: 23px 25px;
+  box-sizing: border-box;
+  padding-bottom: 5px;
+}
+
+.referral-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  height: 29.67px;
+}
+
+.referral-item:last-child {
+  margin-bottom: 0;
+}
+
+.referral-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.referral-avatar {
+  width: 29.67px;
+  height: 29.67px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #d9d9d9;
+}
+
+.referral-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.referral-details {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.referral-name {
+  font-size: 12px;
+  color: white;
+}
+
+.referral-date {
+  font-size: 12px;
+  color: #9d9d9d;
+}
+
+.referral-reward {
+  font-size: 24px;
+  color: white;
+  font-weight: bold;
+}
+
+.invite-button {
+  width: 384.67px;
+  height: 50.74px;
+  background: white;
+  border: none;
+  border-radius: 11.33px;
+  color: #0138ef;
+  font-size: 22.71px;
+  font-weight: 600;
+  cursor: pointer;
+  position: fixed;
+  bottom: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.invite-button:hover {
+  opacity: 0.9;
+}
+
+.invite-button:active {
+  transform: translateX(-50%) scale(0.98);
+}
+
+.person {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.person .right {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.person .right .user-avatar {
+  width: 25px;
+  margin-right: 10px;
+}
+.person .right .user-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: calc(7px + 5 * (100vw / 1280));
+  height: 25px;
+}
+.person .right .user-details .user-data {
+  color: #9d9d9d;
+}
+.headerSub {
+  margin: 20px 0 5px 0;
+}
+
+.taskFor {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
+  width: 100%;
+  font-size: calc(8px + 4 * (100vw / 1280));
+  margin-bottom: -15px;
+}
+.taskFor img {
+  width: 25%;
+  margin-bottom: 10px;
+}
+ol {
+  list-style-type: decimal;
+  margin-left: -25px;
+  width: 65%;
+}
+li:not(:first-child) {
+  margin-top: 10px;
+}
+
+@media screen and (min-width: 720px) {
+  .referrals-screen {
+    padding-right: 20%;
+    padding-left: 20%;
+    align-items: center;
+  }
+}
+@media screen and (min-width: 1440px) {
+  .referrals-screen {
+    padding-right: 30%;
+    padding-left: 30%;
+    align-items: center;
+  }
+}
+
+.button-container {
+  margin-bottom: 20px;
+  width: 100%;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.05);
+}
+.button-container button {
+  width: 50%;
+  border: none;
+  border-radius: 5px;
+  font-size: calc(10px + 8 * (100vw / 1280));
+  padding: 6px 0;
+}
+.block {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.05);
+  display: none; /* Скрываем блоки по умолчанию */
+  padding-bottom: 20px;
+}
+.block.active {
+  display: flex; /* Показываем активный блок */
+  flex-direction: column;
+  width: 100%;
+  border-radius: 5px;
+  align-items: flex-start;
+  justify-content: space-around;
+  height: calc(100vh - 320px);
+  min-height: 310px;
+}
+.active-button {
+  background-color: white; /* Цвет активной кнопки */
+  color: #0126a1; /* Цвет текста активной кнопки */
+}
+.inactive-button {
+  background: none;
+  color: white; /* Цвет неактивной кнопки */
+}
+
+.lineTask {
+  width: calc(100% - 30px);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 15px;
+  padding-top: 20px;
+}
+.lineTask .left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  color: white;
+  font-size: 13px;
+}
+.lineTask .grey {
+  color: #c8c8c8;
+}
+.lineTask .firstHalf img {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+}
+.lineTask .firstHalf {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+.lineTask button {
+  background-color: white;
+  border-radius: 15px;
+  font-size: 13px;
+  width: 80px;
+  height: 30px;
+  border: none;
+  color: #0126a1;
+  font-weight: 600;
+  margin: 0;
+  transition: background-color 0.3s;
+}
+.lineTask .use {
+  cursor: not-allowed;
+  background-color: #7b7b7b;
+  color: white;
+}
+
+button.inactive-button {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #666;
+}
+
+button.use {
+  pointer-events: none;
+}
+
+.tabs {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.tab-active {
+  color: #0126a1;
+  border-radius: 15px;
+}
+
+.tab-inactive {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}

@@ -1,0 +1,452 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  touch-action: none;
+}
+
+.main-container {
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, #002499 0%, #003bff 100%);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+.main-container::-webkit-scrollbar {
+    display: none;
+  }
+/* Используем кастомную переменную для высоты на мобильных устройствах */
+@supports (height: 100dvh) {
+  .main-container {
+    height: 100dvh;
+  }
+}
+
+* {
+  font-family: Inter, serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+  transform: translateZ(0);
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  color: white;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Стили для header */
+.header {
+  height: 50px;
+  background: #3b68ff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 16px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  box-sizing: border-box;
+  z-index: 100;
+  transform: translateZ(0);
+  will-change: transform;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.header .roadmap-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  width: auto;
+}
+
+.header .roadmap-indicator {
+  width: 2.7px;
+  height: 24px;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 0;
+}
+
+.header .roadmap-text {
+  color: white;
+  font-size: calc(12px + 8 * (100vw / 1280));
+  font-weight: 500;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+.header .roadmap-text span {
+  color: #002499;
+}
+
+.header a {
+  width: 77px;
+  height: 26px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  background: #002499;
+  color: white;
+  padding-right: 4px;
+}
+.header a:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+.header aa {
+  width: 70px;
+  height: 24px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  background: #002499;
+  color: white;
+  padding-right: 4px;
+}
+.header aa:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Общие стили для прелоадера */
+.preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.preloader-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #3498db;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  position: relative;
+  z-index: 10000;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.balanceАmount {
+  font-size: 54px;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 5px;
+}
+
+/* Общие стили для навигации */
+.Nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #3b68ff;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  box-sizing: border-box;
+  transform: translateZ(0);
+  will-change: transform;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.Nav button {
+  color: #b8c8ff;
+  font-weight: 500;
+  font-size: calc(8px + 4 * (100vw / 1280));
+  padding: 8px;
+  border: none;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  background: transparent;
+  flex: 1;
+  max-width: 25%;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  transition: none;
+  transform: translateZ(0);
+  will-change: transform, opacity;
+}
+
+.Nav button img {
+  width: 32px;
+  height: 32px;
+  margin-bottom: 4px;
+  /* filter: invert(83%) sepia(11%) saturate(1011%) hue-rotate(197deg) brightness(103%) contrast(96%); */
+  transition: none;
+}
+
+.Nav button.active {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.Nav button.active img {
+  filter: brightness(0) invert(1);
+}
+
+/* Добавляем стили для hover только после загрузки страницы */
+.page-loaded .Nav button {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Обновляем стили текста для всех основных элементов */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 700;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Анимации для переходов между страницами */
+.airdrop-screen,
+.rewards-screen,
+.high-stakes-screen,
+.referrals-screen {
+  animation: fadeIn 0.3s ease-out;
+  transform: translateZ(0);
+  will-change: transform;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding-bottom: calc(env(safe-area-inset-bottom) + 140px);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) translateZ(0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) translateZ(0);
+  }
+}
+
+/* Стили для плавного исчезновения при уходе со страницы */
+.fade-out .airdrop-screen,
+.fade-out .rewards-screen,
+.fade-out .high-stakes-screen,
+.fade-out .referrals-screen {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+.white-button {
+  width: 90%;
+  padding: 10px 0;
+  background: white;
+  border: none;
+  border-radius: 11.33px;
+  color: #0138ef;
+  font-size: calc(14px + 10 * (100vw / 1280));
+  font-weight: 600;
+  cursor: pointer;
+  position: fixed;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+.white-button:hover {
+  opacity: 0.9;
+}
+
+.white-button:active {
+  transform: translateZ(0) translateX(-50%) scale(0.98);
+  transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.back-button {
+  width: 90%;
+  background: white;
+  border: none;
+  border-radius: 11.33px;
+  color: #0138ef;
+  font-size: calc(14px + 10 * (100vw / 1280));
+  font-weight: 600;
+  cursor: pointer;
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+.back-button:hover {
+  opacity: 0.9;
+}
+
+.headName {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+  margin: -10px 0;
+}
+.headName img {
+  height: calc(44px + 10 * (100vw / 1280));
+}
+.headName h1 {
+  width: 50%;
+  font-size: calc(34px + 10 * (100vw / 1280));
+}
+.gamePrimer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+.game-image img {
+  width: 100%;
+}
+.gamePrimer .img {
+  width: 100%;
+  height: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+  overflow: hidden;
+}
+.gamePrimer img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+h2 {
+  font-size: calc(16px + 10 * (100vw / 1280));
+}
+.gamePrimer text {
+  font-size: calc(8px + 3 * (100vw / 1280));
+}
+
+.main-title {
+  font-size: calc(40px + 10 * (100vw / 1280));
+  font-weight: bold;
+  text-align: left;
+  width: 100%;
+  white-space: nowrap;
+  margin: 0;
+  transition: font-size 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.subtitle {
+  font-size: calc(15px + 7 * (100vw / 1280));
+  text-align: left;
+  color: white;
+  width: 100%;
+  white-space: pre-line;
+  margin: 15px 0;
+  font-weight: 500;
+  transition: font-size 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.subtitle span {
+  color: #ff9900;
+}
+
+@media screen and (min-width: 720px) {
+  .white-button,
+  .back-button {
+    padding-left: 0;
+    padding-right: 0;
+    width: 60%;
+  }
+}
+@media screen and (min-width: 1440px) {
+  .white-button,
+  .back-button {
+    width: 40%;
+  }
+}
+
+/* Оптимизация для устройств с высоким DPI */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  * {
+    -webkit-font-smoothing: subpixel-antialiased;
+  }
+}
+
+/* Предотвращаем дерганье при появлении скроллбара */
+html {
+  scrollbar-gutter: stable;
+}
+
+/* Добавляем плавное масштабирование изображений */
+img {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateZ(0);
+  will-change: transform;
+}

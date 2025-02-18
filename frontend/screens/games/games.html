@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Games - VAI Game</title>
+
+    <!-- Основные скрипты -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="../../shared/js/api.js"></script>
+    <script src="../../shared/js/components.js"></script>
+
+    <!-- Стили -->
+    <link rel="stylesheet" href="../../shared/styles/common.css" />
+    <link rel="stylesheet" href="games.css" />
+
+    <!-- Debug tools (только для разработки) -->
+    <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+    <script>eruda.init();</script>
+  </head>
+  <body>
+    <div id="main-container" class="main-container">
+      <div class="games-screen">
+        <div class="games-list">
+          <!-- Coin Flip -->
+          <div class="game-item">
+            <div class="game-image">
+              <img src="../../images/coinFlip.png" alt="Coin" />
+            </div>
+            <div class="game-info">
+              <h2 class="game-title">Coin Flip</h2>
+              <p class="game-description">
+                Heads or tails, no in-betweens. Lucky Pop decides to put it all
+                on the line—because when you're made of air, life's always
+                fifty-fifty. What's your call?
+              </p>
+            </div>
+          </div>
+          <!-- Dice -->
+          <div class="game-item">
+            <div class="game-image">
+              <img src="../../images/dice.png" alt="Dice" />
+            </div>
+            <div class="game-info">
+              <h2 class="game-title">Dice (Roll the Dice)</h2>
+              <p class="game-description">
+                A couple of dice, a whole lot of suspense. Lucky Pop takes a
+                gamble with his round little soul. Will it be a six, or does
+                fate have other plans?
+              </p>
+            </div>
+          </div>
+
+          <!-- Closest Number -->
+          <div class="game-item">
+            <div class="game-image">
+              <img src="../../images/closest-number.png" alt="Closest Number" />
+            </div>
+            <div class="game-info">
+              <h2 class="game-title">Closest Number</h2>
+              <p class="game-description">
+                The stakes? A number from 1 to 100. Lucky Pop plays the guessing
+                game with a confidence only a floating balloon can muster. Too
+                high? Too low? Too bad.
+              </p>
+            </div>
+          </div>
+
+          <!-- Roulette -->
+          <div class="game-item">
+            <div class="game-image">
+              <img src="../../images/roulette.png" alt="Roulette" />
+            </div>
+            <div class="game-info">
+              <h2 class="game-title">Roulette</h2>
+              <p class="game-description">
+                Red, black, or maybe that elusive green. Lucky Pop steps up to
+                the roulette table, his eyes set on the spin, his metaphorical
+                breath held. High risk, high... well, risk.
+              </p>
+            </div>
+          </div>
+
+          <!-- Card Duel -->
+          <div class="game-item">
+            <div class="game-image">
+              <img src="../../images/card-duel.png" alt="Card Duel" />
+            </div>
+            <div class="game-info">
+              <h2 class="game-title">Card Duel</h2>
+              <p class="game-description">
+                Two cards. One winner. Lucky Pop faces off with a deck that has
+                no mercy. Ace or bust, because balloons don't fold.
+              </p>
+            </div>
+          </div>
+
+          <!-- Lucky Spin -->
+          <div class="game-item">
+            <div class="game-image">
+              <img src="../../images/lucky-spin.png" alt="Lucky Spin" />
+            </div>
+            <div class="game-info">
+              <h2 class="game-title">Lucky Spin</h2>
+              <p class="game-description">
+                The wheel turns, Lucky Pop waits. The colors blur, and the
+                numbers taunt him. Whatever it lands on, he's got one thing
+                going for him—he's too light to feel the weight of regret.
+              </p>
+            </div>
+          </div>
+
+          <!-- Mini Lotto -->
+          <div class="game-item">
+            <div class="game-image">
+              <img src="../../images/mini-lotto.png" alt="Mini Lotto" />
+            </div>
+            <div class="game-info">
+              <h2 class="game-title">Mini Lotto</h2>
+              <p class="game-description">
+                Three numbers, a thousand possibilities. Lucky Pop throws his
+                lot into the lotto, convinced that today's the day... or at
+                least, it better be.
+              </p>
+            </div>
+          </div>
+        </div>
+        <button class="white-button back-button" onclick="window.history.back()">
+          Back to menu
+        </button>
+      </div>
+    </div>
+    <script src="games.js"></script>
+  </body>
+</html>

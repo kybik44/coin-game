@@ -1,0 +1,301 @@
+/* Стили для экрана high-stakes */
+.high-stakes-screen {
+    height: calc(100vh);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 61px 16px 0;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.banner {
+    width: 100%;
+    height: auto;
+    background: #FFA800;
+    border-radius: 16.33px;
+    padding: 0 12px;
+    padding-right: 40px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+}
+
+.banner-balloon {
+    width: 65px;
+    height: auto;
+    margin-right: 21px;
+    flex-shrink: 0;
+    object-fit: contain;
+    filter: drop-shadow(2.99px 2.99px 7.01px rgba(0, 0, 0, 0.25));
+    transition: transform 0.3s ease;
+}
+
+.banner-balloon.pressed {
+    transform: scale(0.95);
+}
+
+.banner-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8.33px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.banner-content p {
+    font-size: 13px;
+    line-height: 15px;
+    color: #000000;
+    margin: 0;
+    font-weight: 600;
+    text-align: center;
+    width: 200px;
+}
+
+.click-button {
+    font-size: 10px;
+    height: 25px;
+    background: #0127A5;
+    border-radius: 10.67px;
+    border: none;
+    color: #FFFFFF;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.5s ease;
+    width: 190px;
+}
+
+.click-button:active {
+    background: #FFFFFF;
+    color: #0127A5;
+    transform: scale(0.95);
+}
+
+.game-cost {
+    max-width: 387px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.cost-text {
+    font-size: 16px;
+    font-weight: 500;
+    color: #FFFFFF;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.cost-amount {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 56px;
+    font-weight: 700;
+    color: #FFFFFF;
+}
+
+.cost-vai-icon {
+    width: 42px;
+    height: 42px;
+}
+
+.casino-table {
+    width: 388.67px;
+    position: absolute;
+    top: 373px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    left: 21px;
+}
+
+.table-image {
+    width: 100%;
+    height: 228.67px;
+    border-radius: 40px;
+    margin-bottom: 36px;
+    object-fit: contain;
+}
+
+.gamble-button {
+    width: 384.67px;
+    height: 50.74px;
+    background: #FFFFFF;
+    border-radius: 11.33px;
+    border: none;
+    cursor: pointer;
+    font-size: 22px;
+    font-weight: 600;
+    color: #0138EF;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gamble-button:hover {
+    transform: scale(1.05);
+}
+
+.gamble-button:active {
+    transform: scale(0.97);
+    background: #0126A1;
+    color: #FFFFFF;
+}
+
+.game-container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+    background: linear-gradient(180deg, #0126A1 0%, #0138EF 100%);
+}
+
+.game-title {
+    color: #FFFFFF;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+#cards-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 30px;
+}
+
+.card {
+    position: relative;
+    width: 100%;
+    padding-bottom: 140%;
+    perspective: 1000px;
+    cursor: pointer;
+}
+
+.card-inner {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.6s;
+}
+
+.card.flipped .card-inner {
+    transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 12px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.card-front {
+    background-image: url('../../images/card-back.png');
+}
+
+.card-back {
+    transform: rotateY(180deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: #FFFFFF;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+#game-result {
+    color: #FFFFFF;
+    font-size: 20px;
+    font-weight: 600;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.BigBanner{
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 27vh;
+}
+.BigBanner img{
+    height: auto;
+}
+.headName{
+    margin-top: -20px;
+}
+.headName img{
+    width: 90px;
+    height: auto;
+}
+
+@media screen and (min-width: 720px){
+    .high-stakes-screen, .game-title{
+        padding-right: 20%;
+        padding-left: 20%;
+        align-items: center;
+        margin-bottom: 10%;
+    }
+}
+@media screen and (min-width: 425px){
+    .banner-content p{
+        font-size: 18px;
+        width: 260px;
+        font-weight: 500;
+        line-height: 19px;
+    }
+    .banner-content .click-button{
+        width: 260px;
+    }
+    .banner{
+        padding: 5px 15px;
+    }
+}
+@media screen and (min-width: 1440px){
+    .high-stakes-screen, .game-title{
+        padding-right: 30%;
+        padding-left: 30%;
+        align-items: center;
+    }
+}
+
+@media screen and (min-height: 665px){
+    .gamePrimer h2{
+        font-size: calc(15px + 24 * (100vh / 1280));
+        margin-bottom: 10px;
+    }
+    .gamePrimer text{
+        font-size: calc(0.1px + 24 * (100vh / 1280));
+    }
+    .BigBanner{
+        height: 27vh;
+    }
+    .BigBanner img{
+        height: 100%;
+    }
+}

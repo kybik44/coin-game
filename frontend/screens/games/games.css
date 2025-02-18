@@ -1,0 +1,198 @@
+.main-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: linear-gradient(90deg, #002499 0%, #0037ff 100%);
+  overflow-y: auto;
+  padding-top: 15px;
+  padding-bottom: 0;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  background: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  padding-top: 10px;
+}
+
+.header-title {
+  color: #ffffff;
+  font-size: 33.41px;
+  font-weight: 500;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.games-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 20px 40px 20px;
+  flex-grow: 1;
+  width: 100%;
+  box-sizing: border-box;
+  position: relative;
+  min-height: 100%;
+  overflow-y: auto;
+}
+
+.games-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  margin: 0 auto;
+  padding-bottom: 20px;
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 83px;
+  background: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 16px;
+  z-index: 100;
+}
+
+.gotcha-button {
+}
+
+.gotcha-button:active {
+  background: #0126a1;
+  color: #ffffff;
+}
+
+.gotcha-button:hover {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.game-item {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.game-image {
+  width: 100%;
+  height: 226px;
+  overflow: hidden;
+}
+
+.game-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.game-info {
+  padding: 20px;
+  text-align: left;
+}
+
+.game-title {
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0 0 10px 0;
+  text-align: left;
+}
+
+.game-description {
+  color: white;
+  font-size: calc(9px + 6 * (100vw / 1280));
+  line-height: 1.5;
+  margin: 0;
+  text-align: left;
+  opacity: 0.8;
+}
+
+/* Стили для кнопки */
+.games-screen .white-button.back-button {
+  position: sticky;
+  bottom: 20px;
+  margin: 0 auto;
+  width: 90%;
+  z-index: 10;
+  left: 0;
+  right: 0;
+  transform: none;
+}
+
+/* Адаптивность */
+@media screen and (min-width: 720px) {
+  .games-screen {
+    padding-right: 20%;
+    padding-left: 20%;
+    padding-bottom: 120px;
+  }
+
+  .games-screen .white-button.back-button {
+    width: 60%;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .games-screen {
+    padding-right: 30%;
+    padding-left: 30%;
+    padding-bottom: 140px;
+  }
+
+  .games-screen .white-button.back-button {
+    width: 40%;
+  }
+}
+
+/* Оптимизация для мобильных устройств */
+@media (hover: hover) {
+  .game-item:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* Переопределяем стили main-container для этой страницы */
+.main-container {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding-bottom: 0;
+}
+
+/* Исправляем навигацию */
+.Nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #3b68ff;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  box-sizing: border-box;
+  z-index: 1000;
+}
+
+.Nav button {
+  height: auto;
+  min-height: 70px;
+}

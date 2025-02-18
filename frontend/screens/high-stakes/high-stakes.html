@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>High Stakes - VAI Game</title>
+    <link rel="stylesheet" href="../../shared/styles/common.css">
+    <link rel="stylesheet" href="high-stakes.css">
+    <script src="../../shared/js/gameConfig.js"></script>
+    <script src="../../shared/js/api.js"></script>
+    <script src="../../shared/js/components.js"></script>
+    <script src="high-stakes.js"></script>
+    <script src="../../shared/js/balance.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+    <script>
+      eruda.init();
+    </script>
+</head>
+<body>
+
+
+    <div id="main-container" class="main-container hidden">
+        <div class="header">
+            <div class="roadmap-link">
+                <span class="roadmap-text"><span class="roadmap-line">|</span> Check VAI's roadmap</span>
+            </div>
+            <a href="../roadmap/roadmap.html" class="roadmap-link"><svg width="70" height="10" viewBox="0 0 70 18" xmlns="http://www.w3.org/2000/svg">
+                <path d="M70 2 L78 10 L70 18" stroke="white" stroke-width="2" fill="none" />
+                <line x1="2" y1="10" x2="78" y2="10" stroke="white" stroke-width="2" />
+            </svg>
+            </a>
+        </div>
+
+        <div class="high-stakes-screen">
+            <div class="headName">
+                <h1>GAMES</h1>
+                <img src="../../images/1xbet.png">
+            </div>
+            <div class="banner">
+                <img src="../../images/bannerbaloon.png" alt="Balloon" class="banner-balloon">
+                <div class="banner-content">
+                    <p>Check out the games that are currently under development</p>
+                    <button class="click-button">Click</button>
+                </div>
+            </div>
+
+            <div class="gamePrimer">
+                <div class="BigBanner">
+                    <img src="../../images/cardKing.jpg">
+                </div>
+                <h2>Lucky flip</h2>
+                <text>Four cards, two flips, one prize. Lucky Pop locks eyes with the deck and makes his move. Will he find the jackpot or just another bad hand? Flip, hope, and let luck decide.</text>
+            </div>
+
+            <button class="white-button">
+                <span>Gamble</span>
+            </button>
+        </div>
+
+        <div class="Nav">
+            <button class="nav-item" onclick="window.location.href='../rewards/rewards.html'">
+                <img src="../../images/rewards.svg" alt="Rewards">
+                <span>Rewards</span>
+            </button>
+            <button class="nav-item active">
+                <img src="../../images/highstakes.svg" alt="High Stakes">
+                <span>High Stakes</span>
+            </button>
+            <button class="nav-item" onclick="window.location.href='../referrals/referrals.html'">
+                <img src="../../images/referrals.svg" alt="Referrals">
+                <span>Referrals</span>
+            </button>
+            <button class="nav-item" onclick="window.location.href='../airdrop/airdrop.html'">
+                <img src="../../images/airdrop.svg" alt="Airdrop">
+                <span>Airdrop</span>
+            </button>
+        </div>
+    </div>
+</body>
+</html> 

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <meta name="format-detection" content="telephone=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Referrals - VAI Game</title>
+
+    <!-- Основные скрипты -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="../../shared/js/api.js"></script>
+    <script src="../../shared/js/components.js"></script>
+
+    <!-- Стили -->
+    <link rel="stylesheet" href="../../shared/styles/common.css" />
+    <link rel="stylesheet" href="referrals.css" />
+
+    <!-- Debug tools (только для разработки) -->
+    <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+    <script>
+      eruda.init();
+    </script>
+  </head>
+  <body>
+    <div id="main-container" class="main-container">
+      <div class="header">
+        <div class="roadmap-link">
+          <span class="roadmap-text"
+            ><span class="roadmap-line">|</span> Check VAI's roadmap</span
+          >
+        </div>
+        <a href="../roadmap/roadmap.html" class="roadmap-link"
+          ><svg
+            width="70"
+            height="10"
+            viewBox="0 0 70 18"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M70 2 L78 10 L70 18"
+              stroke="white"
+              stroke-width="2"
+              fill="none"
+            />
+            <line
+              x1="2"
+              y1="10"
+              x2="78"
+              y2="10"
+              stroke="white"
+              stroke-width="2"
+            />
+          </svg>
+        </a>
+      </div>
+
+      <div class="referrals-screen">
+        <h1 class="main-title">INVITE PEOPLE</h1>
+        <p class="subtitle">
+          GET UP TO <span>10 TIMES</span> MORE AIRDROP REWARDS BY SHARING THE
+          INVITATION LINK
+        </p>
+
+        <div class="stats-container">
+          <div class="stats-content">
+            <span class="stats-label">Invites</span>
+            <span class="stats-value">0 users</span>
+          </div>
+        </div>
+
+        <div class="referrals-list">
+          <!-- Здесь будут динамически добавляться рефералы -->
+        </div>
+
+        <button
+          id="invite-button"
+          class="white-button"
+          onclick="handleInvite()"
+        >
+          Invite
+        </button>
+      </div>
+
+      <div class="Nav">
+        <button
+          class="nav-item"
+          onclick="window.location.href='../rewards/rewards.html'"
+        >
+          <img src="../../images/rewards.svg" alt="Rewards" />
+          <span>Rewards</span>
+        </button>
+        <button
+          class="nav-item"
+          onclick="window.location.href='../high-stakes/high-stakes.html'"
+        >
+          <img src="../../images/highstakes.svg" alt="High Stakes" />
+          <span>High Stakes</span>
+        </button>
+        <button
+          class="nav-item active"
+          onclick="window.location.href='../referrals/referrals.html'"
+        >
+          <img src="../../images/referrals.svg" alt="Referrals" />
+          <span>Referrals</span>
+        </button>
+        <button
+          class="nav-item"
+          onclick="window.location.href='../airdrop/airdrop.html'"
+        >
+          <img src="../../images/airdrop.svg" alt="Airdrop" />
+          <span>Airdrop</span>
+        </button>
+      </div>
+    </div>
+
+    <script src="referrals.js"></script>
+  </body>
+</html>
