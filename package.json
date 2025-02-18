@@ -8,7 +8,9 @@
     "start": "cross-env NODE_ENV=production node backend/server.js",
     "clean": "cross-env NODE_ENV=development node scripts/clean-db.js",
     "reset": "npm run clean && npm run dev",
-    "setup-db": "node backend/setupDb.js"
+    "setup-db": "cross-env NODE_ENV=production node backend/setupDb.js",
+    "deploy": "npm cache clean --force && rm -rf node_modules && npm install && cross-env NODE_ENV=production npm run setup-db",
+    "reset-and-deploy": "cross-env NODE_ENV=production npm run clean && npm run deploy"
   },
   "dependencies": {
     "@tonconnect/sdk": "^3.0.6",
