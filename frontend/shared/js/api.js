@@ -1,9 +1,7 @@
 // Проверяем, не объявлен ли уже API_CONFIG
 if (typeof API_CONFIG === "undefined") {
   const API_CONFIG = {
-    BASE_URL: window.location.hostname.includes("ngrok-free.app")
-      ? "https://physically-ethical-pelican.ngrok-free.app"
-      : "http://89.104.70.115:3000",
+    BASE_URL: 'http://89.104.70.115:3000',
     ENDPOINTS: {
       HEALTH: "/api/health",
       CLAIM: "/api/claim",
@@ -15,6 +13,10 @@ if (typeof API_CONFIG === "undefined") {
       "Content-Type": "application/json",
       Accept: "application/json",
     },
+    FETCH_OPTIONS: {
+      credentials: 'include',
+      mode: 'cors'
+    }
   };
   window.API_CONFIG = API_CONFIG;
 }
@@ -62,7 +64,8 @@ const TelegramManager = {
 
       // Проверяем баланс пользователя
       const balanceResponse = await fetch(
-        `${API_CONFIG.BASE_URL}/api/balance/${userId}`
+        `${API_CONFIG.BASE_URL}/api/balance/${userId}`,
+        API_CONFIG.FETCH_OPTIONS
       );
       const balanceData = await balanceResponse.json();
 
@@ -122,6 +125,7 @@ const TelegramManager = {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(requestData),
+          ...API_CONFIG.FETCH_OPTIONS
         }
       );
 
@@ -161,7 +165,8 @@ const TelegramManager = {
 
       // Получаем все рефералы с сервера
       const response = await fetch(
-        `${API_CONFIG.BASE_URL}/api/referrals/${userId}`
+        `${API_CONFIG.BASE_URL}/api/referrals/${userId}`,
+        API_CONFIG.FETCH_OPTIONS
       );
       const data = await response.json();
       console.log("[Referral Debug] Server referrals:", data);
@@ -177,6 +182,7 @@ const TelegramManager = {
         `${API_CONFIG.BASE_URL}/api/debug/reset-referrals`,
         {
           method: "POST",
+          ...API_CONFIG.FETCH_OPTIONS
         }
       );
 

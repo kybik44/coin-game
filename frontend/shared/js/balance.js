@@ -29,9 +29,10 @@ const BalanceManager = {
           "Content-Type": "application/json",
           "Accept": "application/json",
           "Cache-Control": "no-cache",
-          "Pragma": "no-cache"
+          "Pragma": "no-cache",
+          "credentials": "include",
+          "mode": "cors"
         },
-        credentials: 'include',
         cache: "no-store"
       });
 
@@ -69,7 +70,7 @@ const BalanceManager = {
       this.currentBalance = 1000;
       this.lastClaimTime = 0;
       this.updateBalanceDisplay();
-      return this.currentBalance;
+      throw error;
     }
   },
 
