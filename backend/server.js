@@ -5,17 +5,41 @@ const { initializeDatabase } = require("./setupDb");
 const config = require("./config");
 const apiRoutes = require("./routes/api");
 
-let db; // Глобальная переменная для доступа к БД
+const startTime = Date.now();
+let db;
 
 async function startServer() {
   try {
-    // Инициализируем базу данных
     db = await initializeDatabase();
     console.log("Database initialized");
 
     const app = express();
 
-    // Middleware
+    // Мониторинг производительности каждого запроса
+    app.use((req, res, next) => {
+      const start = Date.now();
+      res.on('finish', () => {
+        const duration = Date.now() - start;
+        console.log(`${req.method} ${req.url} - ${duration}ms`);
+        if (duration > 1000) {
+          console.warn(`Slow request: ${req.method} ${req.url} - ${duration}ms`);
+        }
+      });
+      next();
+    });
+
+    // Периодический мониторинг использования памяти
+    setInterval(() => {
+      const used = process.memoryUsage();
+      console.log({
+        timestamp: new Date().toISOString(),
+        rss: `${Math.round(used.rss / 1024 / 1024)}MB`,
+        heapTotal: `${Math.round(used.heapTotal / 1024 / 1024)}MB`,
+        heapUsed: `${Math.round(used.heapUsed / 1024 / 1024)}MB`,
+        uptime: `${Math.round((Date.now() - startTime) / 1000 / 60)}min`
+      });
+    }, 60000);
+
     app.use(cors({
       origin: '*',
       methods: ['GET', 'POST', 'OPTIONS'],
@@ -23,23 +47,37 @@ async function startServer() {
     }));
     app.use(express.json());
 
-    // Обновляем CSP middleware
+    // Обновленный CSP middleware
     app.use((req, res, next) => {
       const csp = {
-        'default-src': ["'self'", 'http://89.104.70.115:3000', 'data:', 'blob:'],
+        'default-src': ["'self'", 'https:', "'unsafe-inline'", "'unsafe-eval'", 'data:', 'blob:'],
         'script-src': [
           "'self'",
           "'unsafe-inline'",
           "'unsafe-eval'",
-          'http://89.104.70.115:3000',
+          'https:',
+          'data:',
+          'blob:',
           'https://telegram.org',
-          'https://cdn.jsdelivr.net'
+          'https://fonts.googleapis.com'
         ],
-        'style-src': ["'self'", "'unsafe-inline'"],
-        'img-src': ["'self'", 'data:', 'http://89.104.70.115:3000', 'https:'],
-        'connect-src': ["'self'", 'http://89.104.70.115:3000', 'wss:'],
+        'style-src': [
+          "'self'",
+          "'unsafe-inline'",
+          'https:',
+          'https://fonts.googleapis.com',
+          'https://fonts.gstatic.com'
+        ],
+        'font-src': [
+          "'self'",
+          'https:',
+          'data:',
+          'https://fonts.gstatic.com'
+        ],
+        'img-src': ["'self'", 'data:', 'https:', 'http:', 'blob:'],
+        'connect-src': ["'self'", 'https:', 'wss:', 'http://89.104.70.115:3000'],
         'worker-src': ["'self'", 'blob:'],
-        'frame-src': ["'self'", 'http://89.104.70.115:3000']
+        'frame-src': ["'self'", 'https:', 'http://89.104.70.115:3000']
       };
 
       const cspString = Object.entries(csp)
@@ -50,47 +88,45 @@ async function startServer() {
       next();
     });
 
-    // Логирование запросов
-    app.use((req, res, next) => {
-      console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
-      next();
-    });
+    // Кэширование статических файлов
+    const staticOptions = {
+      maxAge: '1d',
+      etag: true,
+      lastModified: true
+    };
 
-    // Статические файлы
-    app.use(express.static(path.join(__dirname, '../frontend')));
-    app.use('/shared', express.static(path.join(__dirname, '../frontend/shared')));
-    app.use('/screens', express.static(path.join(__dirname, '../frontend/screens')));
-    app.use('/images', express.static(path.join(__dirname, '../frontend/images')));
+    app.use(express.static(path.join(__dirname, '../frontend'), staticOptions));
+    app.use('/shared', express.static(path.join(__dirname, '../frontend/shared'), staticOptions));
+    app.use('/screens', express.static(path.join(__dirname, '../frontend/screens'), staticOptions));
+    app.use('/images', express.static(path.join(__dirname, '../frontend/images'), staticOptions));
 
-    // Корневой маршрут
     app.get('/', (req, res) => {
       res.sendFile(path.join(__dirname, '../frontend/index.html'));
     });
 
-    // Маршрут для manifest.json
     app.get("/tonconnect-manifest.json", (req, res) => {
       res.sendFile(path.join(__dirname, '../frontend/public/tonconnect-manifest.json'));
     });
 
-    // Единый middleware для логирования
+    // Оптимизированная настройка MIME типов
     app.use((req, res, next) => {
-      console.log("Request URL:", req.url);
-      console.log("Request path:", req.path);
-      console.log("Content-Type:", res.get("Content-Type"));
-      next();
-    });
-
-    // Настройка MIME типов
-    app.use((req, res, next) => {
-      if (req.path.endsWith(".js")) {
-        res.type("application/javascript");
-      } else if (req.path.endsWith(".css")) {
-        res.type("text/css");
+      const ext = path.extname(req.path).toLowerCase();
+      const mimeTypes = {
+        '.js': 'application/javascript',
+        '.css': 'text/css',
+        '.json': 'application/json',
+        '.png': 'image/png',
+        '.jpg': 'image/jpeg',
+        '.gif': 'image/gif',
+        '.svg': 'image/svg+xml'
+      };
+      if (mimeTypes[ext]) {
+        res.type(mimeTypes[ext]);
       }
       next();
     });
 
-    // Add cache control middleware
+    // Кэш-контроль для API
     app.use((req, res, next) => {
       if (req.path.startsWith("/api/")) {
         res.set("Cache-Control", "no-store");
@@ -98,17 +134,18 @@ async function startServer() {
       next();
     });
 
-    // Подключаем API роуты
     app.use("/api", apiRoutes);
 
-    // Обработка несуществующих маршрутов
-    app.use((req, res) => {
-      res.sendFile(path.join(__dirname, '../frontend/index.html'));
-    });
-
-    // Add error handling middleware
+    // Обработка ошибок с детальным логированием
     app.use((err, req, res, next) => {
-      console.error('Server error:', err);
+      console.error('Server error:', {
+        message: err.message,
+        stack: err.stack,
+        path: req.path,
+        method: req.method,
+        timestamp: new Date().toISOString()
+      });
+      
       res.status(500).json({
         error: 'Internal server error',
         details: err.message,
@@ -116,11 +153,19 @@ async function startServer() {
       });
     });
 
-    // Запускаем сервер
-    app.listen(config.port, "0.0.0.0", () => {
+    const server = app.listen(config.port, "0.0.0.0", () => {
       console.log(`Server running in ${process.env.NODE_ENV || "production"} mode`);
       console.log(`Server URL: ${config.baseUrl}`);
       console.log(`Local URL: http://localhost:${config.port}`);
+    });
+
+    // Обработка graceful shutdown
+    process.on('SIGTERM', () => {
+      console.log('SIGTERM signal received: closing HTTP server');
+      server.close(() => {
+        console.log('HTTP server closed');
+        process.exit(0);
+      });
     });
 
   } catch (error) {
@@ -129,8 +174,5 @@ async function startServer() {
   }
 }
 
-// Запускаем сервер
 startServer();
-
-// Экспортируем db для использования в routes
 module.exports = { db };

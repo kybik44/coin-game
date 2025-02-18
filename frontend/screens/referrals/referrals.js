@@ -113,21 +113,21 @@ async function loadReferrals() {
 // Функция для обработки кнопки Invite
 function handleInvite() {
   const userId = TelegramManager.getUserId();
-  const botName = "dev_kybik_bot";
+  const botName = "vaitoken_bot";
   const startCommand = `start=${userId}`;
 
   // Создаем три версии ссылки для разных платформ
   const links = {
-    webapp: `https://t.me/${botName}/bot?startapp=${userId}`, // Для WebApp на всех платформах
+    webapp: `https://t.me/${botName}/vaiapp?startapp=${userId}`, // Для WebApp на всех платформах
     bot: `https://t.me/${botName}?${startCommand}`, // Для бота
-    universal: `https://t.me/${botName}/bot?${startCommand}`, // Универсальная ссылка
+    universal: `https://t.me/${botName}/vaiapp?${startCommand}`, // Универсальная ссылка
   };
 
   console.log("[Referral] Creating invite links:", links);
 
   const messageText = `🎮 Join VAI Game and get 1000 VAI bonus tokens!\n\n🎁 Use my referral link to start:\n${links.webapp}`;
 
-  const linkToShare = `https://t.me/${botName}/bot?startapp=${userId}`;
+  const linkToShare = `https://t.me/${botName}/vaiapp?startapp=${userId}`;
   window.Telegram.WebApp.openTelegramLink(
     `https://t.me/share/url?url=${encodeURIComponent(
       linkToShare

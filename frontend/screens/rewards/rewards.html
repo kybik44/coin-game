@@ -14,22 +14,19 @@
     <title>Rewards - VAI Game</title>
     <link rel="stylesheet" href="../../shared/styles/common.css" />
     <link rel="stylesheet" href="rewards.css" />
-    <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
-    <script>
-      eruda.init();
-    </script>
+
     <script>
       document.addEventListener("DOMContentLoaded", async () => {
         console.log("[Rewards] DOMContentLoaded event fired");
-        
+
         try {
           if (!window.TelegramManager) {
             throw new Error("TelegramManager not available");
           }
 
           console.log("[Rewards] Starting initialization...");
-          
-          if (!await TelegramManager.init()) {
+
+          if (!(await TelegramManager.init())) {
             console.error("Telegram WebApp not initialized");
             return;
           }
@@ -37,7 +34,6 @@
           // Добавляем обработчик клика на шар
           addBalloonClickHandler();
           console.log("Added balloon click handler");
-
         } catch (error) {
           console.error("[Rewards] Initialization error:", error);
         }
