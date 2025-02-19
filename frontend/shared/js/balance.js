@@ -28,12 +28,9 @@ const BalanceManager = {
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
-          "Cache-Control": "no-cache",
-          "Pragma": "no-cache",
-          "credentials": "include",
-          "mode": "cors"
         },
-        cache: "no-store"
+        mode: 'cors',
+        credentials: 'same-origin'
       });
 
       console.log("Response status:", response.status);

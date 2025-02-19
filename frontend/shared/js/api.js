@@ -1,7 +1,9 @@
 // Проверяем, не объявлен ли уже API_CONFIG
 if (typeof API_CONFIG === "undefined") {
   const API_CONFIG = {
-    BASE_URL: 'http://89.104.70.115:3000',
+    BASE_URL: window.location.hostname === 'morevault.space' 
+      ? 'http://89.104.70.115:3000'
+      : 'http://localhost:3000',
     ENDPOINTS: {
       HEALTH: "/api/health",
       CLAIM: "/api/claim",
@@ -11,10 +13,10 @@ if (typeof API_CONFIG === "undefined") {
     },
     HEADERS: {
       "Content-Type": "application/json",
-      Accept: "application/json",
+      "Accept": "application/json",
     },
     FETCH_OPTIONS: {
-      credentials: 'include',
+      credentials: 'same-origin',
       mode: 'cors'
     }
   };

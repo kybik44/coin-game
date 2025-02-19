@@ -22,7 +22,7 @@ const config = {
     port: 3000,
     baseUrl: 'https://physically-ethical-pelican.ngrok-free.app',
     dbPath: dbPath,
-    corsOrigin: '*',
+    corsOrigin: ['http://localhost:3000'],
     protocol: 'https',
     apiPrefix: '/api'
   },
@@ -30,7 +30,7 @@ const config = {
     port: 3000,
     baseUrl: 'http://89.104.70.115:3000',
     dbPath: dbPath,
-    corsOrigin: '*',
+    corsOrigin: ['http://morevault.space', 'https://morevault.space'],
     protocol: 'http',
     apiPrefix: '/api'
   }

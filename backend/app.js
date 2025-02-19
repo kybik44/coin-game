@@ -14,22 +14,23 @@ app.use((req, res, next) => {
     next();
 });
 
-// CORS middleware
+// Обновляем CORS middleware
 app.use((req, res, next) => {
-    const allowedOrigins = ['http://morevault.space', 'https://physically-ethical-pelican.ngrok-free.app'];
+    const allowedOrigins = ['http://morevault.space', 'https://morevault.space'];
     const origin = req.headers.origin;
     
-    // Проверяем, является ли источник разрешенным
     if (allowedOrigins.includes(origin)) {
         res.setHeader('Access-Control-Allow-Origin', origin);
-        res.setHeader('Access-Control-Allow-Credentials', 'true');
         res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, credentials');
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
+        res.setHeader('Access-Control-Max-Age', '86400'); // 24 часа
     }
     
     // Обработка preflight запросов
     if (req.method === 'OPTIONS') {
-        return res.sendStatus(200);
+        res.sendStatus(200);
+        return;
     }
     
     next();

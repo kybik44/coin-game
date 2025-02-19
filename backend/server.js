@@ -41,9 +41,10 @@ async function startServer() {
     }, 60000);
 
     app.use(cors({
-      origin: '*',
+      origin: ['http://morevault.space', 'https://morevault.space'],
       methods: ['GET', 'POST', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization']
+      allowedHeaders: ['Content-Type', 'Authorization', 'credentials'],
+      credentials: true
     }));
     app.use(express.json());
 
