@@ -1,3 +1,9 @@
+const express = require("express");
+const cors = require("cors");
+const path = require("path");
+
+const app = express();
+
 // Настройка CSP
 app.use((req, res, next) => {
   res.setHeader(
@@ -14,39 +20,7 @@ app.use((req, res, next) => {
   next();
 });
 
-// Обновляем CORS middleware
-app.use((req, res, next) => {
-  const allowedOrigins = ["http://morevault.space", "https://morevault.space"];
-  const origin = req.headers.origin;
-
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader("Access-Control-Allow-Origin", origin);
-    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-    res.setHeader(
-      "Access-Control-Allow-Headers",
-      "Content-Type, Authorization, credentials"
-    );
-    res.setHeader("Access-Control-Allow-Credentials", "true");
-    res.setHeader("Access-Control-Max-Age", "86400"); // 24 часа
-  }
-
-  // Обработка preflight запросов
-  if (req.method === "OPTIONS") {
-    res.sendStatus(200);
-    return;
-  }
-
-  next();
-});
-
-// Статические файлы
-app.use(express.static(path.join(__dirname, "public")));
-
-// Маршрут для manifest.json
-app.get("/tonconnect-manifest.json", (req, res) => {
-  res.sendFile(path.join(__dirname, "public/tonconnect-manifest.json"));
-});
-
+// Настройка CORS (единственная настройка через пакет cors)
 app.use(
   cors({
     origin: ["http://morevault.space", "https://morevault.space"],
@@ -60,3 +34,13 @@ app.use(
     credentials: true,
   })
 );
+
+// Статические файлы
+app.use(express.static(path.join(__dirname, "public")));
+
+// Маршрут для manifest.json
+app.get("/tonconnect-manifest.json", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/tonconnect-manifest.json"));
+});
+
+module.exports = app;

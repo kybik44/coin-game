@@ -8,9 +8,9 @@ const BalanceManager = {
   updateInterval: null,
   lastClaimTime: 0,
   lastUpdateTime: 0,
-  BASE_URL: window.location.hostname.includes('ngrok-free.app')
-    ? 'https://physically-ethical-pelican.ngrok-free.app'
-    : 'http://89.104.70.115:3000',
+  BASE_URL: window.location.hostname.includes("ngrok-free.app")
+    ? "https://physically-ethical-pelican.ngrok-free.app"
+    : "http://89.104.70.115:3000",
 
   // Получение баланса с сервера
   async fetchBalance(userId) {
@@ -27,16 +27,16 @@ const BalanceManager = {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          "Accept": "application/json",
-          "Cache-Control": "no-cache"
+          Accept: "application/json",
+          "Cache-Control": "no-cache",
         },
-        mode: 'cors',
-        credentials: 'include'
+        mode: "cors",
+        credentials: "include",
       });
 
       console.log("Response status:", response.status);
       console.log("Response headers:", Object.fromEntries(response.headers));
-      
+
       const responseText = await response.text();
       console.log("Raw response:", responseText);
 
@@ -50,8 +50,8 @@ const BalanceManager = {
 
       console.log("Parsed balance data:", data);
 
-      if (!data || typeof data.balance !== 'number') {
-        console.error('Invalid balance data received:', data);
+      if (!data || typeof data.balance !== "number") {
+        console.error("Invalid balance data received:", data);
         // Используем значение по умолчанию
         this.currentBalance = 1000;
         this.lastClaimTime = 0;
@@ -96,7 +96,7 @@ const BalanceManager = {
     }
 
     console.log("Initializing balance manager for user:", userId);
-    
+
     // Очищаем предыдущий интервал если есть
     if (this.updateInterval) {
       clearInterval(this.updateInterval);
@@ -139,12 +139,14 @@ const BalanceManager = {
     try {
       const userId = TelegramManager.getUserId();
       if (!userId) {
-        throw new Error('User ID not available');
+        throw new Error("User ID not available");
       }
 
-      const response = await fetch(`${API_CONFIG.BASE_URL}/api/balance/${userId}`);
+      const response = await fetch(
+        `${API_CONFIG.BASE_URL}/api/balance/${userId}`
+      );
       if (!response.ok) {
-        throw new Error('Failed to fetch balance');
+        throw new Error("Failed to fetch balance");
       }
 
       const data = await response.json();
@@ -154,14 +156,14 @@ const BalanceManager = {
       this.updateBalanceDisplay();
       return true;
     } catch (error) {
-      console.error('Balance initialization error:', error);
+      console.error("Balance initialization error:", error);
       return false;
     }
   },
 
   async update() {
     await this.initialize();
-  }
+  },
 };
 
 // Присваиваем BalanceManager к window
@@ -170,8 +172,8 @@ window.BalanceManager = BalanceManager;
 // Проверяем, что BalanceManager корректно инициализирован
 console.log("BalanceManager initialized:", {
   hasObject: !!window.BalanceManager,
-  hasFetchBalance: typeof window.BalanceManager?.fetchBalance === 'function',
-  methods: Object.keys(window.BalanceManager || {})
+  hasFetchBalance: typeof window.BalanceManager?.fetchBalance === "function",
+  methods: Object.keys(window.BalanceManager || {}),
 });
 
 // Очистка при уходе со страницы
