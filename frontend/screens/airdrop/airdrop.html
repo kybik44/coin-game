@@ -9,17 +9,13 @@
     <meta name="format-detection" content="telephone=no" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Airdrop - VAI Game</title>
-
-    <!-- Стили -->
     <link rel="stylesheet" href="../../shared/styles/common.css" />
     <link rel="stylesheet" href="airdrop.css" />
-
-    <!-- Скрипты -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="../../shared/js/api.js"></script>
     <script src="../../shared/js/balance.js"></script>
   </head>
-  <body>
+  <body ontouchstart="">
     <div id="main-container" class="main-container">
       <div class="header">
         <div class="roadmap-link">
@@ -27,8 +23,8 @@
             ><span class="roadmap-line">|</span> Check VAI's roadmap</span
           >
         </div>
-        <a href="../roadmap/roadmap.html" class="roadmap-link"
-          ><svg
+        <a href="../roadmap/roadmap.html" class="roadmap-link">
+          <svg
             width="70"
             height="10"
             viewBox="0 0 70 18"
@@ -83,41 +79,41 @@
         </div>
 
         <div class="leaderboard-container">
-          <!-- Лидерборд будет заполнен динамически -->
+          <!-- Лидерборд заполняется динамически -->
         </div>
 
         <div id="ton-connect"></div>
 
-      <div class="Nav">
-        <button
-          class="nav-item"
-          onclick="navigateTo('../rewards/rewards.html')"
-        >
-          <img src="../../images/rewards.svg" alt="Rewards" />
-          <span>Rewards</span>
-        </button>
-        <button
-          class="nav-item"
-          onclick="navigateTo('../high-stakes/high-stakes.html')"
-        >
-          <img src="../../images/highstakes.svg" alt="High Stakes" />
-          <span>High Stakes</span>
-        </button>
-        <button
-          class="nav-item"
-          onclick="navigateTo('../referrals/referrals.html')"
-        >
-          <img src="../../images/referrals.svg" alt="Referrals" />
-          <span>Referrals</span>
-        </button>
-        <button class="nav-item active">
-          <img src="../../images/airdrop.svg" alt="Airdrop" />
-          <span>Airdrop</span>
-        </button>
+        <div class="Nav">
+          <button
+            class="nav-item"
+            onclick="navigateTo('../rewards/rewards.html')"
+          >
+            <img src="../../images/rewards.svg" alt="Rewards" />
+            <span>Rewards</span>
+          </button>
+          <button
+            class="nav-item"
+            onclick="navigateTo('../high-stakes/high-stakes.html')"
+          >
+            <img src="../../images/highstakes.svg" alt="High Stakes" />
+            <span>High Stakes</span>
+          </button>
+          <button
+            class="nav-item"
+            onclick="navigateTo('../referrals/referrals.html')"
+          >
+            <img src="../../images/referrals.svg" alt="Referrals" />
+            <span>Referrals</span>
+          </button>
+          <button class="nav-item active">
+            <img src="../../images/airdrop.svg" alt="Airdrop" />
+            <span>Airdrop</span>
+          </button>
+        </div>
       </div>
     </div>
 
-    <!-- Подключаем TON Connect в конце body -->
     <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
     <script>
       const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
@@ -142,42 +138,35 @@
         },
       });
 
-      // Настраиваем возврат в Telegram Mini App
       tonConnectUI.uiOptions = {
         twaReturnUrl: "https://t.me/vaitoken_bot/vaiapp",
       };
 
-      // Подписываемся на изменения состояния кошелька
       tonConnectUI.onStatusChange((wallet) => {
-        const walletStatus = document.getElementById("wallet-status");
-        const walletAddress = document.getElementById("wallet-address");
-
-        if (wallet) {
-          console.log("Wallet connected:", wallet);
-          if (walletStatus) {
-            walletStatus.textContent = "Connected";
-            walletStatus.classList.add("connected");
-          }
-          if (walletAddress) {
-            const address = wallet.account.address;
-            walletAddress.textContent = `${address.slice(
-              0,
-              6
-            )}...${address.slice(-4)}`;
-            walletAddress.classList.add("visible");
-          }
-        } else {
-          console.log("Wallet disconnected");
-          if (walletStatus) {
-            walletStatus.textContent = "Not connected";
-            walletStatus.classList.remove("connected");
-          }
-          if (walletAddress) {
-            walletAddress.textContent = "";
-            walletAddress.classList.remove("visible");
-          }
-        }
+        console.log(
+          "Wallet status changed:",
+          wallet ? "Connected" : "Disconnected"
+        );
       });
+
+      // Инициализация Telegram WebApp и синхронизация высоты
+      window.Telegram.WebApp.ready();
+      window.Telegram.WebApp.expand();
+
+      function adjustViewportHeight() {
+        const viewportHeight = window.Telegram.WebApp.viewportHeight;
+        document.documentElement.style.setProperty(
+          "--tg-viewport-height",
+          `${viewportHeight}px`
+        );
+        const mainContainer = document.getElementById("main-container");
+        if (mainContainer) {
+          mainContainer.style.minHeight = `${viewportHeight}px`;
+        }
+      }
+
+      adjustViewportHeight();
+      window.Telegram.WebApp.onEvent("viewportChanged", adjustViewportHeight);
     </script>
     <script src="airdrop.js"></script>
   </body>

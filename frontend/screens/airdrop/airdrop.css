@@ -2,15 +2,19 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 60px 20px calc(70px + 20px) 20px;
+  padding: 60px 20px 0 20px;
   flex-grow: 1;
   width: 100%;
   box-sizing: border-box;
   position: relative;
   min-height: 100%;
   background: linear-gradient(90deg, #002499 0%, #0037ff 100%);
-  /* overflow-y: auto; */
   overflow-y: scroll;
+}
+
+#ton-connect {
+  width: 100%;
+  margin: 16px 0;
 }
 
 .grade-container {
@@ -84,7 +88,7 @@
   margin: 8px 0;
   backdrop-filter: blur(10px);
   align-self: flex-start;
-  min-height: 200px;
+  min-height: 180px;
   overflow-y: scroll;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -207,35 +211,6 @@ hr {
 
 .modal-content button {
   max-width: 100%;
-}
-
-@media screen and (min-width: 720px) {
-  .airdrop-screen {
-    padding-right: 20%;
-    padding-left: 20%;
-    padding-bottom: 120px;
-  }
-}
-@media screen and (min-width: 720px) {
-  .airdrop-screen {
-    padding-right: 20%;
-    padding-left: 20%;
-    align-items: center;
-  }
-  .connect-button {
-    width: 60%;
-    padding: 10px 0;
-  }
-}
-@media screen and (min-width: 1440px) {
-  .airdrop-screen {
-    padding-right: 30%;
-    padding-left: 30%;
-    padding-bottom: 140px;
-  }
-  .connect-button {
-    width: 40%;
-  }
 }
 
 @media screen and (min-height: 665px) {
@@ -392,15 +367,6 @@ hr {
   right: 0;
 }
 
-/* Переопределяем стили main-container для этой страницы */
-.main-container {
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  padding-bottom: 0;
-}
-
 /* Добавляем стили для скроллбара */
 .leaderboard-container {
   scrollbar-width: none;
@@ -409,56 +375,6 @@ hr {
 
 .leaderboard-container::-webkit-scrollbar {
   display: none;
-}
-
-/* Стили для TON Connect кнопки */
-#ton-connect {
-  width: 100%;
-  margin: 16px 0;
-}
-
-/* Стили для затемнения фона при открытом модальном окне */
-#tc-widget-root {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 999;
-  pointer-events: none;
-  background: transparent;
-}
-
-/* Стили для активного состояния виджета (когда модальное окно открыто) */
-#tc-widget-root.active {
-  pointer-events: auto;
-  background: rgba(0, 0, 0, 0.5);
-}
-
-/* Стили для кнопки в Telegram стиле */
-[data-tc-connect-button="true"] {
-  width: 100% !important;
-  padding: 12px 16px !important;
-  background: var(--tg-theme-button-color, #2481cc) !important;
-  border: none !important;
-  border-radius: 8px !important;
-  color: var(--tg-theme-button-text-color, #ffffff) !important;
-  font-size: 16px !important;
-  cursor: pointer !important;
-  transition: opacity 0.2s !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 8px !important;
-}
-
-.go2267139606 {
-  width: 100% !important;
-}
-
-#ton-connect {
-  width: 100%;
-  height: 200px;
 }
 
 /* Добавляем стили для навигации */
@@ -476,65 +392,21 @@ hr {
   z-index: 1000;
 }
 
-/* Стили для кнопки и дропдауна */
-[data-tc-connect-button="true"] {
-  width: 100% !important;
-  padding: 12px 16px !important;
-  background: var(--tg-theme-button-color, #2481cc) !important;
-  border: none !important;
-  border-radius: 8px !important;
-  color: var(--tg-theme-button-text-color, #ffffff) !important;
-  font-size: 16px !important;
-  cursor: pointer !important;
-  transition: opacity 0.2s !important;
-  display: flex !important;
-  align-items: center !important;
+#tc-widget-root.active {
+  z-index: 10001; /* Установите значение выше, чем у .preloader (9999) и .header (100) */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+[data-tc-wallets-modal-container="true"] {
+  z-index: 10002; /* Убедитесь, что само модальное окно тоже поверх всего */
+}
+
+[data-tc-connect-button] {
+  width: 100%;
+  text-align: center !important;
   justify-content: center !important;
-  gap: 8px !important;
-}
-
-[data-tc-dropdown-button="true"] {
-  width: 100% !important;
-  padding: 12px 16px !important;
-  border: none !important;
-  border-radius: 8px !important;
-  color: var(--tg-theme-button-text-color, #ffffff) !important;
-  font-size: 16px !important;
-  cursor: pointer !important;
-  transition: opacity 0.2s !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 8px !important;
-}
-
-/* Стили для контейнера кнопки */
-.go3572451881,
-.go2267139606 {
-  width: 100% !important;
-}
-
-/* Стили для контейнера tc-root */
-tc-root {
-  width: 100% !important;
-  display: block !important;
-}
-
-/* Стили для внутреннего div в ton-connect */
-#ton-connect > div {
-  width: 100% !important;
-}
-
-/* Стили для дропдауна */
-[data-tc-dropdown-container="true"] {
-  width: 100% !important;
-  max-width: none !important;
-  left: 0 !important;
-  bottom: 65vh !important;
-}
-
-[data-tc-dropdown="true"] {
-  width: 100% !important;
-  border-radius: 8px !important;
-  background: var(--tg-theme-bg-color, #ffffff) !important;
 }
