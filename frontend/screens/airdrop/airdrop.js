@@ -367,21 +367,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (modalContainer && widgetRoot) {
           widgetRoot.classList.add("active");
-
-          // Синхронизация высоты с Telegram WebApp
           const viewportHeight = window.Telegram.WebApp.viewportHeight;
-          modalContainer.style.height = `${viewportHeight}px`;
-          modalContainer.style.top = "0"; // Устанавливаем верхнюю границу в 0
+          const navHeight = 70; // Высота .Nav из CSS
+          modalContainer.style.height = `${viewportHeight + navHeight}px`; // Учитываем высоту навигации
+          modalContainer.style.top = "0";
           modalContainer.style.position = "fixed";
           modalContainer.style.left = "0";
-          modalContainer.style.right = "0";
-          modalContainer.style.bottom = "0";
           modalContainer.style.width = "100%";
           modalContainer.style.zIndex = "10002";
-          document.body.style.overflow = "visible"; // Разрешаем видимость
+          document.body.style.overflow = "visible";
         } else if (widgetRoot) {
           widgetRoot.classList.remove("active");
-          document.body.style.overflow = "hidden"; // Восстанавливаем
+          document.body.style.overflow = "hidden";
         }
       }
     });
@@ -389,15 +386,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   observer.observe(document.body, { childList: true, subtree: true });
 
-  // Дополнительная синхронизация при изменении viewport
   window.Telegram.WebApp.onEvent("viewportChanged", () => {
     const modalContainer = document.querySelector(
       '[data-tc-wallets-modal-container="true"]'
     );
     if (modalContainer) {
       const viewportHeight = window.Telegram.WebApp.viewportHeight;
-      modalContainer.style.height = `${viewportHeight}px`;
-      modalContainer.style.top = "0"; // Всегда сбрасываем в 0
+      const navHeight = 70; // Учитываем высоту .Nav
+      modalContainer.style.height = `${viewportHeight + navHeight}px`;
+      modalContainer.style.top = "0";
     }
   });
 });

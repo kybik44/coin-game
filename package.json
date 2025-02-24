@@ -19,6 +19,8 @@
     "cross-env": "^7.0.3",
     "express": "^4.17.1",
     "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "eruda": "^3.4.1"
   }
 }
- 

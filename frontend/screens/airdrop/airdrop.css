@@ -395,25 +395,29 @@ hr {
   z-index: 1000;
 }
 
-#tc-widget-root.active {
-  z-index: 10001;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100dvh; /* Используем 100dvh для полной высоты на мобильных */
-  overflow-y: auto; /* Разрешаем прокрутку содержимого модального окна */
-}
-
 [data-tc-wallets-modal-container="true"] {
   z-index: 10002;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%; /* Устанавливаем высоту через JS, но базово 100% */
-  max-height: 100dvh; /* Ограничиваем максимальную высоту */
+  height: 100%; /* Базовая высота */
+  max-height: 100dvh; /* Ограничение по динамической высоте */
+  padding: 0 !important; /* Убираем внутренние отступы TonConnectUI */
+  margin: 0 !important; /* Убираем возможные внешние отступы */
+  bottom: 0; /* Привязываем к нижней границе */
   box-sizing: border-box;
+}
+
+#tc-widget-root.active {
+  z-index: 10001;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100dvh; /* Полная высота экрана */
+  overflow-y: auto; /* Прокрутка, если контент выходит за пределы */
+  bottom: 0; /* Убедимся, что растягивается до низа */
 }
 
 /* Убедимся, что кнопка подключения не влияет на позиционирование */
@@ -422,7 +426,14 @@ hr {
   text-align: center !important;
   justify-content: center !important;
 }
-
+.go3572451881 {
+  width: 100% !important;
+}
+[data-tc-dropdown-button] {
+  width: 100%;
+  text-align: center !important;
+  justify-content: center !important;
+}
 /* Предотвращаем перекрытие навигацией */
 .Nav {
   z-index: 1000; /* Убедимся, что навигация ниже модального окна */
