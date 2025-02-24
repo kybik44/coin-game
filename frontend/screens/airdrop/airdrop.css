@@ -88,6 +88,7 @@
   margin: 8px 0;
   backdrop-filter: blur(10px);
   align-self: flex-start;
+  max-height: 240px;
   min-height: 180px;
   overflow-y: scroll;
   scrollbar-width: none;
