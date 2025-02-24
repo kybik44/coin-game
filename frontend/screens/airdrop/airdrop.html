@@ -147,38 +147,11 @@
           "Wallet status changed:",
           wallet ? "Connected" : "Disconnected"
         );
-
-        // Синхронизация высоты модального окна
-        const modalContainer = document.querySelector(
-          '[data-tc-wallets-modal-container="true"]'
-        );
-        if (modalContainer) {
-          const viewportHeight = window.Telegram.WebApp.viewportHeight;
-          modalContainer.style.height = `${viewportHeight}px`;
-          modalContainer.style.top = `${
-            window.Telegram.WebApp.viewportStableHeight - viewportHeight
-          }px`; // Учитываем смещение
-        }
-      }); 
+      });
 
       // Инициализация Telegram WebApp и синхронизация высоты
       window.Telegram.WebApp.ready();
       window.Telegram.WebApp.expand();
-
-      function adjustViewportHeight() {
-        const viewportHeight = window.Telegram.WebApp.viewportHeight;
-        document.documentElement.style.setProperty(
-          "--tg-viewport-height",
-          `${viewportHeight}px`
-        );
-        const mainContainer = document.getElementById("main-container");
-        if (mainContainer) {
-          mainContainer.style.minHeight = `${viewportHeight}px`;
-        }
-      }
-
-      adjustViewportHeight();
-      window.Telegram.WebApp.onEvent("viewportChanged", adjustViewportHeight);
     </script>
     <script src="airdrop.js"></script>
   </body>
