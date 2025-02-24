@@ -15,6 +15,37 @@ async function startServer() {
 
     const app = express();
 
+    // Логирование всех входящих запросов для отладки
+    app.use((req, res, next) => {
+      console.log(`[${req.method}] ${req.url} - Headers:`, req.headers);
+      next();
+    });
+
+    // Настройка CORS (применяется до всех маршрутов)
+    app.use(
+      cors({
+        origin: ["http://morevault.space", "https://morevault.space"],
+        methods: ["GET", "POST", "OPTIONS"],
+        allowedHeaders: [
+          "Content-Type",
+          "Authorization",
+          "credentials",
+          "Cache-Control",
+        ],
+        credentials: true,
+        preflightContinue: false,
+        optionsSuccessStatus: 200,
+      })
+    );
+
+    // Логирование ответа на preflight запросы
+    app.options("*", (req, res) => {
+      console.log("Preflight response headers:", res.getHeaders());
+      res.status(200).end();
+    });
+
+    app.use(express.json());
+
     // Мониторинг производительности каждого запроса
     app.use((req, res, next) => {
       const start = Date.now();
@@ -41,22 +72,6 @@ async function startServer() {
         uptime: `${Math.round((Date.now() - startTime) / 1000 / 60)}min`,
       });
     }, 60000);
-
-    // Настройка CORS
-    app.use(
-      cors({
-        origin: ["http://morevault.space", "https://morevault.space"],
-        methods: ["GET", "POST", "OPTIONS"],
-        allowedHeaders: [
-          "Content-Type",
-          "Authorization",
-          "credentials",
-          "Cache-Control",
-        ],
-        credentials: true,
-      })
-    );
-    app.use(express.json());
 
     // Обновленный CSP middleware
     app.use((req, res, next) => {
