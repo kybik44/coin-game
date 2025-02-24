@@ -147,7 +147,19 @@
           "Wallet status changed:",
           wallet ? "Connected" : "Disconnected"
         );
-      });
+
+        // Синхронизация высоты модального окна
+        const modalContainer = document.querySelector(
+          '[data-tc-wallets-modal-container="true"]'
+        );
+        if (modalContainer) {
+          const viewportHeight = window.Telegram.WebApp.viewportHeight;
+          modalContainer.style.height = `${viewportHeight}px`;
+          modalContainer.style.top = `${
+            window.Telegram.WebApp.viewportStableHeight - viewportHeight
+          }px`; // Учитываем смещение
+        }
+      }); 
 
       // Инициализация Telegram WebApp и синхронизация высоты
       window.Telegram.WebApp.ready();

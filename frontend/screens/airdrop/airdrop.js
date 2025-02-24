@@ -356,7 +356,6 @@ setInterval(async () => {
   }
 }, 30000);
 
-// Наблюдатель за DOM для TonConnectUI
 const observer = new MutationObserver((mutations) => {
   mutations.forEach((mutation) => {
     if (mutation.type === "childList") {
@@ -367,11 +366,31 @@ const observer = new MutationObserver((mutations) => {
 
       if (modalContainer && widgetRoot) {
         widgetRoot.classList.add("active");
+        const viewportHeight = window.Telegram.WebApp.viewportHeight;
+        modalContainer.style.height = `${viewportHeight}px`;
+        modalContainer.style.top = "0";
+        modalContainer.style.position = "fixed";
+        modalContainer.style.left = "0";
+        modalContainer.style.width = "100%";
+        modalContainer.style.zIndex = "10002"; // Убедитесь, что поверх всего
+        document.body.style.overflow = "visible";
       } else if (widgetRoot) {
         widgetRoot.classList.remove("active");
+        document.body.style.overflow = "hidden";
       }
     }
   });
 });
 
 observer.observe(document.body, { childList: true, subtree: true });
+
+// Дополнительная синхронизация при изменении viewport
+window.Telegram.WebApp.onEvent("viewportChanged", () => {
+  const modalContainer = document.querySelector(
+    '[data-tc-wallets-modal-container="true"]'
+  );
+  if (modalContainer) {
+    const viewportHeight = window.Telegram.WebApp.viewportHeight;
+    modalContainer.style.height = `${viewportHeight}px`;
+  }
+});
