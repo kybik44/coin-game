@@ -13,10 +13,13 @@
 }
 
 #ton-connect {
-  width: 100%;
-  margin: 16px 0;
-  position: relative; /* Убедитесь, что он не выходит за пределы контейнера */
-  z-index: 1000; /* Дайте ему достаточно высокий z-index */
+  width: 90vw;
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  right: 0;
+  z-index: 1000;
 }
 
 .grade-container {
