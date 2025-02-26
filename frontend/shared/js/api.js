@@ -1,9 +1,10 @@
 // Проверяем, не объявлен ли уже API_CONFIG
 if (typeof API_CONFIG === "undefined") {
   const API_CONFIG = {
-    BASE_URL: window.location.hostname === 'morevault.space' 
-      ? 'http://89.104.70.115:3000'
-      : 'http://localhost:3000',
+    BASE_URL:
+      window.location.hostname === "morevault.space"
+        ? "http://89.104.70.115:3000"
+        : "http://localhost:3000",
     ENDPOINTS: {
       HEALTH: "/api/health",
       CLAIM: "/api/claim",
@@ -13,12 +14,12 @@ if (typeof API_CONFIG === "undefined") {
     },
     HEADERS: {
       "Content-Type": "application/json",
-      "Accept": "application/json",
+      Accept: "application/json",
     },
     FETCH_OPTIONS: {
-      credentials: 'same-origin',
-      mode: 'cors'
-    }
+      credentials: "same-origin",
+      mode: "cors",
+    },
   };
   window.API_CONFIG = API_CONFIG;
 }
@@ -37,11 +38,11 @@ const TelegramManager = {
       this.tg = window.Telegram.WebApp;
       this.tg.ready();
       this.tg.expand();
-      
+
       this.initialized = true;
       return true;
     }
-    
+
     return false;
   },
 
@@ -62,49 +63,52 @@ const TelegramManager = {
         return false;
       }
 
-      console.log("[Referral] Checking balance for user:", userId);
+      console.log("[Referral] Checking user status for:", userId);
 
-      // Проверяем баланс пользователя
+      // Получаем данные пользователя
       const balanceResponse = await fetch(
         `${API_CONFIG.BASE_URL}/api/balance/${userId}`,
         API_CONFIG.FETCH_OPTIONS
       );
       const balanceData = await balanceResponse.json();
+      console.log("[Referral] User data:", balanceData);
 
-      console.log("[Referral] Balance check response:", balanceData);
-
-      // Проверяем ошибки
       if (balanceData.error) {
         console.error("[Referral] Balance check error:", balanceData.error);
         return false;
       }
 
-      // Если пользователь не новый, показываем сообщение
-      if (!balanceData.isNew) {
+      // Проверяем, есть ли уже реферер
+      if (balanceData.referrer_id) {
         console.log(
-          "[Referral] User already exists, isNew:",
-          balanceData.isNew
+          "[Referral] User already has a referrer:",
+          balanceData.referrer_id
         );
         this.tg.showPopup({
-          title: "Already Registered",
-          message: "You cannot use referral links after registration",
+          title: "Already Referred",
+          message: "You have already used a referral link",
           buttons: [{ type: "ok" }],
         });
         return false;
       }
 
-      // Очищаем параметр от возможных префиксов
+      // Очищаем параметр от префиксов
       const cleanStartParam = startParam
         .toString()
         .replace(/^(webapp|bot|universal)_/, "");
       console.log("[Referral] Cleaned start parameter:", cleanStartParam);
 
       if (!cleanStartParam || cleanStartParam === userId.toString()) {
-        console.log("[Referral] Invalid start parameter");
+        console.log("[Referral] Invalid start parameter or self-referral");
+        this.tg.showPopup({
+          title: "Invalid Referral",
+          message: "Cannot refer yourself or invalid link",
+          buttons: [{ type: "ok" }],
+        });
         return false;
       }
 
-      // Отправляем запрос на активацию реферала
+      // Отправляем запрос на активацию
       const userData = this.tg.initDataUnsafe?.user;
       const requestData = {
         referrerId: cleanStartParam,
@@ -127,7 +131,7 @@ const TelegramManager = {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(requestData),
-          ...API_CONFIG.FETCH_OPTIONS
+          ...API_CONFIG.FETCH_OPTIONS,
         }
       );
 
@@ -147,6 +151,11 @@ const TelegramManager = {
       throw new Error(data.error || "Failed to activate referral");
     } catch (error) {
       console.error("[Referral] Error:", error);
+      this.tg.showPopup({
+        title: "Referral Error",
+        message: error.message || "Failed to activate referral",
+        buttons: [{ type: "ok" }],
+      });
       return false;
     }
   },
@@ -184,7 +193,7 @@ const TelegramManager = {
         `${API_CONFIG.BASE_URL}/api/debug/reset-referrals`,
         {
           method: "POST",
-          ...API_CONFIG.FETCH_OPTIONS
+          ...API_CONFIG.FETCH_OPTIONS,
         }
       );
 

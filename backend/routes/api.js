@@ -9,11 +9,11 @@ router.get("/balance/:userId", async (req, res) => {
     const { userId } = req.params;
     console.log("[Balance] Getting balance for:", userId);
 
-    // Проверяем существование пользователя
-    let user = await db.get("SELECT * FROM users WHERE telegram_id = ?", [userId]);
+    let user = await db.get("SELECT * FROM users WHERE telegram_id = ?", [
+      userId,
+    ]);
     console.log("[Balance] User check result:", user);
 
-    // Если пользователя нет, создаем его
     if (!user) {
       console.log("[Balance] Creating new user:", userId);
       await db.run(
@@ -25,15 +25,18 @@ router.get("/balance/:userId", async (req, res) => {
         ) VALUES (?, ?, ?, ?)`,
         [userId, 1000, Date.now(), 0]
       );
-      user = await db.get("SELECT * FROM users WHERE telegram_id = ?", [userId]);
+      user = await db.get("SELECT * FROM users WHERE telegram_id = ?", [
+        userId,
+      ]);
       console.log("[Balance] Created user:", user);
     }
 
     const response = {
       balance: user.balance,
       lastClaimTime: user.last_claim_time || 0,
-      isNew: !user.stories_shown,
-      storiesShown: !!user.stories_shown
+      isNew: user.referrer_id === null && user.stories_shown === 0,
+      storiesShown: !!user.stories_shown,
+      referrer_id: user.referrer_id,
     };
 
     console.log("[Balance] Sending response:", response);
@@ -42,7 +45,7 @@ router.get("/balance/:userId", async (req, res) => {
     console.error("[Balance] Error:", error);
     res.status(500).json({
       error: "Internal server error",
-      details: error.message
+      details: error.message,
     });
   }
 });
@@ -70,13 +73,13 @@ router.get("/next-claim/:userId", async (req, res) => {
       canClaim: timeLeft <= 0,
       nextClaimTime: nextClaimTime,
       timeLeft: timeLeft,
-      lastClaimTime: lastClaimTime
+      lastClaimTime: lastClaimTime,
     });
   } catch (error) {
     console.error("[Next Claim] Error:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: "Internal server error",
-      details: error.message 
+      details: error.message,
     });
   }
 });
@@ -92,10 +95,9 @@ router.post("/claim", async (req, res) => {
     }
 
     // Проверяем существование пользователя
-    let user = await db.get(
-      "SELECT * FROM users WHERE telegram_id = ?",
-      [userId]
-    );
+    let user = await db.get("SELECT * FROM users WHERE telegram_id = ?", [
+      userId,
+    ]);
 
     // Если пользователя нет, создаем его
     if (!user) {
@@ -109,10 +111,9 @@ router.post("/claim", async (req, res) => {
         ) VALUES (?, ?, ?, ?)`,
         [userId, 1000, Date.now(), 0]
       );
-      user = await db.get(
-        "SELECT * FROM users WHERE telegram_id = ?",
-        [userId]
-      );
+      user = await db.get("SELECT * FROM users WHERE telegram_id = ?", [
+        userId,
+      ]);
     }
 
     // Проверяем время последнего клейма
@@ -125,7 +126,7 @@ router.post("/claim", async (req, res) => {
       return res.status(400).json({
         error: "Claim not ready",
         timeLeft,
-        nextClaimTime: lastClaimTime + claimCooldown
+        nextClaimTime: lastClaimTime + claimCooldown,
       });
     }
 
@@ -141,20 +142,22 @@ router.post("/claim", async (req, res) => {
       [newBalance, now, userId]
     );
 
-    console.log("[Claim] Successful claim for user:", userId, { newBalance, reward });
+    console.log("[Claim] Successful claim for user:", userId, {
+      newBalance,
+      reward,
+    });
 
     res.json({
       success: true,
       balance: newBalance,
       reward,
-      nextClaimTime: now + claimCooldown
+      nextClaimTime: now + claimCooldown,
     });
-
   } catch (error) {
     console.error("[Claim] Error:", error);
     res.status(500).json({
       error: "Internal server error",
-      details: error.message
+      details: error.message,
     });
   }
 });
@@ -292,10 +295,9 @@ router.post("/game/start", async (req, res) => {
     }
 
     // Проверяем существование пользователя
-    const user = await db.get(
-      "SELECT * FROM users WHERE telegram_id = ?",
-      [userId]
-    );
+    const user = await db.get("SELECT * FROM users WHERE telegram_id = ?", [
+      userId,
+    ]);
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
@@ -308,7 +310,7 @@ router.post("/game/start", async (req, res) => {
       return res.status(400).json({
         error: "Insufficient balance",
         required: GAME_COST,
-        current: user.balance
+        current: user.balance,
       });
     }
 
@@ -328,20 +330,19 @@ router.post("/game/start", async (req, res) => {
 
     console.log("[Game Start] Game started for user:", userId, {
       cost: GAME_COST,
-      newBalance: updatedUser.balance
+      newBalance: updatedUser.balance,
     });
 
     res.json({
       success: true,
       balance: updatedUser.balance,
-      cost: GAME_COST
+      cost: GAME_COST,
     });
-
   } catch (error) {
     console.error("[Game Start] Error:", error);
     res.status(500).json({
       error: "Internal server error",
-      details: error.message
+      details: error.message,
     });
   }
 });
@@ -350,17 +351,17 @@ router.post("/game/start", async (req, res) => {
 router.post("/game/win", async (req, res) => {
   try {
     const { userId, amount } = req.body;
-    console.log("[Game Win] Request:", { 
-      userId, 
+    console.log("[Game Win] Request:", {
+      userId,
       amount,
       userIdType: typeof userId,
-      amountType: typeof amount 
+      amountType: typeof amount,
     });
 
     if (!userId || !amount) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         error: "User ID and amount are required",
-        details: { userId, amount }
+        details: { userId, amount },
       });
     }
 
@@ -373,9 +374,9 @@ router.post("/game/win", async (req, res) => {
     console.log("[Game Win] Found user:", user);
 
     if (!user) {
-      return res.status(404).json({ 
+      return res.status(404).json({
         error: "User not found",
-        details: { userId: userId.toString() }
+        details: { userId: userId.toString() },
       });
     }
 
@@ -398,13 +399,13 @@ router.post("/game/win", async (req, res) => {
     res.json({
       success: true,
       balance: updatedUser.balance,
-      wonAmount: amount
+      wonAmount: amount,
     });
   } catch (error) {
     console.error("[Game Win] Error:", error);
     res.status(500).json({
       error: "Internal server error",
-      details: error.message
+      details: error.message,
     });
   }
 });
@@ -413,18 +414,21 @@ router.post("/game/win", async (req, res) => {
 router.post("/referral/activate", async (req, res) => {
   try {
     const { referrerId, userId, userData } = req.body;
-    console.log("[Referral] Activation request:", { referrerId, userId, userData });
+    console.log("[Referral] Activation request:", {
+      referrerId,
+      userId,
+      userData,
+    });
 
     // Проверяем существование реферера
-    const referrer = await db.get(
-      "SELECT * FROM users WHERE telegram_id = ?",
-      [referrerId]
-    );
+    const referrer = await db.get("SELECT * FROM users WHERE telegram_id = ?", [
+      referrerId,
+    ]);
 
     if (!referrer) {
       return res.status(400).json({
         error: "Invalid referral",
-        details: "Referrer not found"
+        details: "Referrer not found",
       });
     }
 
@@ -432,7 +436,7 @@ router.post("/referral/activate", async (req, res) => {
     if (referrerId === userId) {
       return res.status(400).json({
         error: "Invalid referral",
-        details: "Cannot refer yourself"
+        details: "Cannot refer yourself",
       });
     }
 
@@ -450,15 +454,14 @@ router.post("/referral/activate", async (req, res) => {
         await db.run("ROLLBACK");
         return res.status(400).json({
           error: "Already referred",
-          details: "You have already used a referral link"
+          details: "You have already used a referral link",
         });
       }
 
       // Создаем или обновляем пользователя
-      const user = await db.get(
-        "SELECT * FROM users WHERE telegram_id = ?",
-        [userId]
-      );
+      const user = await db.get("SELECT * FROM users WHERE telegram_id = ?", [
+        userId,
+      ]);
 
       if (!user) {
         // Создаем нового пользователя
@@ -483,7 +486,7 @@ router.post("/referral/activate", async (req, res) => {
             2000, // Начальный баланс + бонус
             Date.now(),
             0,
-            referrerId
+            referrerId,
           ]
         );
       } else {
@@ -503,7 +506,7 @@ router.post("/referral/activate", async (req, res) => {
             userData?.first_name,
             userData?.last_name,
             userData?.photo_url,
-            userId
+            userId,
           ]
         );
       }
@@ -532,8 +535,8 @@ router.post("/referral/activate", async (req, res) => {
         success: true,
         reward: {
           referrer: 1000,
-          referred: 1000
-        }
+          referred: 1000,
+        },
       });
     } catch (error) {
       await db.run("ROLLBACK");
@@ -543,7 +546,7 @@ router.post("/referral/activate", async (req, res) => {
     console.error("[Referral] Activation error:", error);
     res.status(500).json({
       error: "Internal server error",
-      details: error.message
+      details: error.message,
     });
   }
 });
@@ -826,9 +829,11 @@ router.post("/debug/reset-database", async (req, res) => {
 router.get("/debug/db-state", async (req, res) => {
   try {
     console.log("[Debug] Checking database state...");
-    
+
     // Проверяем структуру таблиц
-    const tables = await db.all("SELECT name FROM sqlite_master WHERE type='table'");
+    const tables = await db.all(
+      "SELECT name FROM sqlite_master WHERE type='table'"
+    );
     console.log("[Debug] Tables:", tables);
 
     // Получаем всех пользователей
@@ -843,13 +848,13 @@ router.get("/debug/db-state", async (req, res) => {
       tables,
       users,
       referrals,
-      dbPath: config.dbPath
+      dbPath: config.dbPath,
     });
   } catch (error) {
     console.error("[Debug] Error:", error);
     res.status(500).json({
       error: "Database check failed",
-      details: error.message
+      details: error.message,
     });
   }
 });
@@ -858,22 +863,21 @@ router.get("/debug/db-state", async (req, res) => {
 router.post("/stories/mark-shown", async (req, res) => {
   try {
     const { userId } = req.body;
-    
+
     if (!userId) {
       return res.status(400).json({ error: "User ID is required" });
     }
 
-    await db.run(
-      "UPDATE users SET stories_shown = 1 WHERE telegram_id = ?",
-      [userId]
-    );
+    await db.run("UPDATE users SET stories_shown = 1 WHERE telegram_id = ?", [
+      userId,
+    ]);
 
     res.json({ success: true });
   } catch (error) {
     console.error("[Stories] Error marking stories as shown:", error);
     res.status(500).json({
       error: "Internal server error",
-      details: error.message
+      details: error.message,
     });
   }
 });
@@ -882,9 +886,11 @@ router.post("/stories/mark-shown", async (req, res) => {
 router.post("/tasks/complete", async (req, res) => {
   try {
     const { userId, taskType } = req.body;
-    
+
     if (!userId || !taskType) {
-      return res.status(400).json({ error: "User ID and task type are required" });
+      return res
+        .status(400)
+        .json({ error: "User ID and task type are required" });
     }
 
     // Проверяем, не выполнено ли уже задание
@@ -899,18 +905,18 @@ router.post("/tasks/complete", async (req, res) => {
 
     // Определяем награду за задание
     const taskRewards = {
-      'join_community': 500,
-      'follow_twitter': 500,
-      'add_stickerpack': 500,
-      'view_website': 500,
-      'pass_test': 500,
-      'react_blum': 500,
-      'join_luck': 1000,
-      'join_aphbt': 1000,
-      'join_chloe': 1000,
-      'join_suricat': 1000,
-      'join_benzin': 1000,
-      'join_blum': 1000
+      join_community: 500,
+      follow_twitter: 500,
+      add_stickerpack: 500,
+      view_website: 500,
+      pass_test: 500,
+      react_blum: 500,
+      join_luck: 1000,
+      join_aphbt: 1000,
+      join_chloe: 1000,
+      join_suricat: 1000,
+      join_benzin: 1000,
+      join_blum: 1000,
     };
 
     const reward = taskRewards[taskType];
@@ -946,7 +952,7 @@ router.post("/tasks/complete", async (req, res) => {
       res.json({
         success: true,
         reward,
-        newBalance: user.balance
+        newBalance: user.balance,
       });
     } catch (error) {
       await db.run("ROLLBACK");
@@ -956,7 +962,7 @@ router.post("/tasks/complete", async (req, res) => {
     console.error("[Tasks] Error:", error);
     res.status(500).json({
       error: "Internal server error",
-      details: error.message
+      details: error.message,
     });
   }
 });
@@ -975,13 +981,13 @@ router.get("/tasks/status/:userId", async (req, res) => {
       completedTasks: completedTasks.reduce((acc, task) => {
         acc[task.task_type] = task.completed_at;
         return acc;
-      }, {})
+      }, {}),
     });
   } catch (error) {
     console.error("[Tasks Status] Error:", error);
     res.status(500).json({
       error: "Internal server error",
-      details: error.message
+      details: error.message,
     });
   }
 });

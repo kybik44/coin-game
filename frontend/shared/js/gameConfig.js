@@ -1,7 +1,7 @@
 const GAME_CONFIG = {
     // Основные параметры игры
     COST: 300,
-    WINNING_CHANCE: 1.0, // Временно 100% для тестирования
+    WINNING_CHANCE: 0.1, // Установлен шанс выигрыша 10%
     POSSIBLE_REWARDS: [3000, 5000, 10000],
     
     // Изображения карт
@@ -46,4 +46,4 @@ const GAME_CONFIG = {
     }
 };
 
-window.GAME_CONFIG = GAME_CONFIG; 
+window.GAME_CONFIG = GAME_CONFIG;

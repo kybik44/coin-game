@@ -93,8 +93,8 @@
   margin: 8px 0;
   backdrop-filter: blur(10px);
   align-self: flex-start;
-  max-height: 180px;
-  min-height: 180px;
+  height: 100%;
+  margin-bottom: 120px;
   overflow-y: scroll;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -426,6 +426,7 @@ hr {
 /* Убедимся, что кнопка подключения не влияет на позиционирование */
 [data-tc-connect-button] {
   width: 100%;
+  border-radius: 11.33px !important;
   text-align: center !important;
   justify-content: center !important;
 }
@@ -434,6 +435,7 @@ hr {
 }
 [data-tc-dropdown-button] {
   width: 100%;
+  border-radius: 11.33px !important;
   text-align: center !important;
   justify-content: center !important;
 }

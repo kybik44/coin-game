@@ -159,8 +159,8 @@
 
             console.log("[Stories] Check result:", data);
 
-            // Проверяем только по флагу isNew из ответа сервера
-            return data.isNew;
+            // Показываем сторис только если пользователь новый (без реферера и без просмотра сторис)
+            return data.isNew && !data.storiesShown;
           } catch (error) {
             console.error("[Stories] Error checking status:", error);
             return false;
@@ -331,7 +331,6 @@
         }
       }
 
-      // Основная логика
       async function initApp() {
         console.log("[Index] Starting app initialization...");
 
@@ -346,12 +345,33 @@
             throw new Error("Failed to initialize Telegram WebApp");
           }
 
-          // Получаем userId для логирования
           const userId = TelegramManager.getUserId();
           console.log("[Index] Current user ID:", userId);
 
-          // Инициализируем и проверяем необходимость показа сторис
+          const startParam =
+            window.Telegram?.WebApp?.initDataUnsafe?.start_param;
+          console.log("[Index] Extracted start_param:", startParam);
+
           const storiesManager = new StoriesManager();
+
+          // Сначала проверяем и активируем реферальную ссылку, если она есть
+          if (startParam) {
+            console.log("[Index] Processing referral code:", startParam);
+            const referralSuccess = await TelegramManager.checkReferral(
+              startParam
+            );
+            if (referralSuccess) {
+              console.log(
+                "[Index] Referral activated, redirecting to rewards..."
+              );
+              window.location.href = "screens/rewards/rewards.html";
+              return;
+            }
+            // Если реферальная активация не удалась (например, пользователь уже зарегистрирован),
+            // продолжаем с проверкой сторис
+          }
+
+          // Проверяем, нужно ли показывать сторис
           const shouldShowStories = await storiesManager.shouldShowStories();
           console.log("[Index] Should show stories:", shouldShowStories);
 
@@ -360,15 +380,7 @@
             document.getElementById("preloader").style.display = "none";
             storiesManager.start();
           } else {
-            console.log("[Index] Skipping stories...");
-            const startParam =
-              window.Telegram?.WebApp?.initDataUnsafe?.start_param;
-            if (startParam) {
-              console.log("[Index] Processing referral code:", startParam);
-              await TelegramManager.checkReferral(startParam);
-            }
-
-            console.log("[Index] Redirecting to rewards page...");
+            console.log("[Index] Skipping stories, redirecting to rewards...");
             window.location.href = "screens/rewards/rewards.html";
           }
         } catch (error) {
