@@ -759,106 +759,68 @@ router.post("/stories/mark-shown", async (req, res) => {
     });
   }
 });
+// Маршрут для отслеживания клика
+router.get("/tasks/track/:taskType", async (req, res) => {
+  const { taskType } = req.params;
+  const { userId } = req.query;
 
-router.post("/tasks/complete", async (req, res) => {
-  try {
-    const { userId, taskType } = req.body;
+  // Логируем клик в базу данных
+  await db.run(
+    "INSERT INTO task_clicks (user_id, task_type, clicked_at) VALUES (?, ?, ?)",
+    [userId, taskType, Date.now()]
+  );
 
-    if (!userId || !taskType) {
-      return res
-        .status(400)
-        .json({ error: "User ID and task type are required" });
+  // Перенаправляем на реальный URL
+  res.redirect(taskUrls[taskType]);
+});
+
+// Маршрут для проверки выполнения
+router.get("/tasks/check/:taskType", async (req, res) => {
+  const { taskType } = req.params;
+  const { userId } = req.query;
+
+  let completed = false;
+  let reward = 0;
+
+  if (taskType === "join_community") {
+    // Проверка подписки через Telegram Bot API
+    const isSubscribed = await checkTelegramSubscription(userId, "getvaitoken");
+    if (isSubscribed) {
+      completed = true;
+      reward = 500;
     }
-
-    const existingTask = await db.get(
-      "SELECT * FROM completed_tasks WHERE user_id = ? AND task_type = ?",
+  } else if (taskType === "view_website") {
+    // Проверка клика по ссылке
+    const clickRecorded = await db.get(
+      "SELECT * FROM task_clicks WHERE user_id = ? AND task_type = ?",
       [userId, taskType]
     );
-
-    if (existingTask) {
-      return res.status(400).json({ error: "Task already completed" });
+    if (clickRecorded) {
+      completed = true;
+      reward = 500;
     }
-
-    const taskRewards = {
-      join_community: 500,
-      follow_twitter: 500,
-      add_stickerpack: 500,
-      view_website: 500,
-      pass_test: 500,
-      react_blum: 500,
-      join_luck: 1000,
-      join_aphbt: 1000,
-      join_chloe: 1000,
-      join_suricat: 1000,
-      join_benzin: 1000,
-      join_blum: 1000,
-    };
-
-    const reward = taskRewards[taskType];
-    if (!reward) {
-      return res.status(400).json({ error: "Invalid task type" });
-    }
-
-    await db.run("BEGIN TRANSACTION");
-
-    try {
-      await db.run(
-        `INSERT INTO completed_tasks (user_id, task_type, completed_at, reward) 
-         VALUES (?, ?, ?, ?)`,
-        [userId, taskType, Date.now(), reward]
-      );
-
-      await db.run(
-        "UPDATE users SET balance = balance + ? WHERE telegram_id = ?",
-        [reward, userId]
-      );
-
-      const user = await db.get(
-        "SELECT balance FROM users WHERE telegram_id = ?",
-        [userId]
-      );
-
-      await db.run("COMMIT");
-
-      res.json({
-        success: true,
-        reward,
-        newBalance: user.balance,
-      });
-    } catch (error) {
-      await db.run("ROLLBACK");
-      throw error;
-    }
-  } catch (error) {
-    console.error("[Tasks] Error:", error);
-    res
-      .status(500)
-      .json({ error: "Internal server error", details: error.message });
   }
-});
 
-// Получение статуса заданий
-router.get("/tasks/status/:userId", async (req, res) => {
-  try {
-    const { userId } = req.params;
-
-    const completedTasks = await db.all(
-      "SELECT task_type, completed_at FROM completed_tasks WHERE user_id = ?",
-      [userId]
+  if (completed) {
+    // Начисляем награду и отмечаем задание как выполненное
+    await db.run(
+      "UPDATE users SET balance = balance + ? WHERE telegram_id = ?",
+      [reward, userId]
     );
-
-    res.json({
-      completedTasks: completedTasks.reduce((acc, task) => {
-        acc[task.task_type] = task.completed_at;
-        return acc;
-      }, {}),
-    });
-  } catch (error) {
-    console.error("[Tasks Status] Error:", error);
-    res
-      .status(500)
-      .json({ error: "Internal server error", details: error.message });
+    await db.run(
+      "INSERT INTO completed_tasks (user_id, task_type, completed_at, reward) VALUES (?, ?, ?, ?)",
+      [userId, taskType, Date.now(), reward]
+    );
   }
+
+  res.json({ completed, reward });
 });
+
+// Проверка подписки на канал
+async function checkTelegramSubscription(userId, channel) {
+  // Реальная проверка через Telegram Bot API
+  // Здесь заглушка, нужно реализовать вызов API вашего бота
+  return true;
+}
 
 module.exports = router;
