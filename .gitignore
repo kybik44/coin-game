@@ -31,3 +31,5 @@ coverage
 
 database.db
 backend/database.db
+
+coin-game/backend/database.db

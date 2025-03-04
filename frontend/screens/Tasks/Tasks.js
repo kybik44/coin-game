@@ -17,88 +17,113 @@ const TASK_TYPES = {
 const taskUrls = {
   join_community: "https://t.me/getvaitoken",
   follow_twitter: "https://x.com/getvaiii",
-  add_stickerpack: "https://t.me/getvaitoken",
+  add_stickerpack: "https://t.me/addstickers/somepack",
   view_website: "https://getvault.space",
-  pass_test: "https://t.me/getvaitoken",
-  react_blum: "https://t.me/getvaitoken",
-  join_luck: "https://t.me/getvaitoken",
-  join_aphbt: "https://t.me/getvaitoken",
-  join_chloe: "https://t.me/getvaitoken",
-  join_suricat: "https://t.me/getvaitoken",
-  join_benzin: "https://t.me/getvaitoken",
-  join_blum: "https://t.me/getvaitoken",
+  pass_test: "https://example.com/test",
+  react_blum: "https://t.me/getvaitoken/123",
+  join_luck: "https://t.me/luck_channel",
+  join_aphbt: "https://t.me/aphbt_channel",
+  join_chloe: "https://t.me/chloe_channel",
+  join_suricat: "https://t.me/suricat_channel",
+  join_benzin: "https://t.me/benzin_channel",
+  join_blum: "https://t.me/blum_channel",
 };
 
-async function loadTasksStatus() {
-  const userId = TelegramManager.getUserId();
-  if (!userId) return;
+// Проверка, является ли задача верифицируемой (подписка на канал)
+function isVerifiable(taskType) {
+  return taskType.startsWith("join_");
+}
 
-  const response = await fetch(
-    `${API_CONFIG.BASE_URL}/api/tasks/status/${userId}`
-  );
-  const data = await response.json();
+// Инициализация Telegram Web App
+const tg = window.Telegram.WebApp;
+tg.ready();
+const user = tg.initDataUnsafe.user;
+const userId = user.id;
 
-  if (response.ok) {
-    Object.entries(data.completedTasks).forEach(([taskType, completedAt]) => {
-      const button = document.querySelector(`[data-task-type="${taskType}"]`);
-      if (button) {
-        button.disabled = true;
-        button.classList.add("inactive-button");
-        button.classList.remove("active-button");
-      }
-    });
+// Получение списка выполненных задач
+async function getCompletedTasks() {
+  try {
+    const response = await fetch(`/api/tasks/completed/${userId}`);
+    const data = await response.json();
+    return data.completed;
+  } catch (error) {
+    console.error("Ошибка получения выполненных задач:", error);
+    return [];
   }
 }
 
-// Запуск задачи
-async function startTask(button, taskType) {
-  const userId = TelegramManager.getUserId();
-  if (!userId || !button || !taskType) return;
-
-  button.disabled = true;
-  button.classList.add("use");
-
-  // Перенаправляем через сервер для отслеживания
-  const trackingUrl = `${API_CONFIG.BASE_URL}/api/tasks/track/${taskType}?userId=${userId}`;
-  window.Telegram.WebApp.openLink(trackingUrl);
-
-  // Проверяем выполнение через 5 секунд
-  setTimeout(() => checkTaskCompletion(taskType), 5000);
-}
-
-// Проверка выполнения задачи
-async function checkTaskCompletion(taskType) {
-  const userId = TelegramManager.getUserId();
-  if (!userId) return;
-
-  const response = await fetch(
-    `${API_CONFIG.BASE_URL}/api/tasks/check/${taskType}?userId=${userId}`
-  );
-  const data = await response.json();
-
-  if (response.ok && data.completed) {
-    const button = document.querySelector(`[data-task-type="${taskType}"]`);
-    if (button) {
+// Обновление состояния кнопок
+async function updateButtonStates() {
+  const completedTasks = await getCompletedTasks();
+  const buttons = document.querySelectorAll("button[data-task-type]");
+  buttons.forEach((button) => {
+    const taskType = button.dataset.taskType;
+    if (completedTasks.includes(taskType)) {
+      button.textContent = "Completed";
       button.disabled = true;
-      button.classList.add("inactive-button");
-      button.classList.remove("active-button");
+      button.classList.add("use");
+    } else {
+      button.textContent = "Start";
+      button.dataset.state = "start";
     }
-    window.Telegram.WebApp.showPopup({
-      message: `Вы получили ${data.reward} VAI!`,
-      buttons: [{ type: "ok" }],
+  });
+}
+
+// Обработка клика по кнопке
+async function handleButtonClick(button) {
+  const taskType = button.dataset.taskType;
+  const state = button.dataset.state;
+
+  if (state === "start") {
+    tg.openLink(taskUrls[taskType]);
+    if (isVerifiable(taskType)) {
+      button.textContent = "Check";
+      button.dataset.state = "check";
+    } else {
+      button.textContent = "Claim";
+      button.dataset.state = "claim";
+    }
+  } else if (state === "check") {
+    const response = await fetch("/api/tasks/verify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, taskType }),
     });
+    console.log(response);
+    const data = await response.json();
+    console.log(data);
+    if (data.success) {
+      button.textContent = "Completed";
+      button.disabled = true;
+      button.classList.add("use");
+      tg.showAlert(`Задание выполнено! Вы заработали ${data.reward} VAI`);
+    } else {
+      tg.showAlert("Задание еще не выполнено. Подпишитесь на канал.");
+    }
+  } else if (state === "claim") {
+    // Завершение задачи без проверки
+    const response = await fetch("/api/tasks/complete", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, taskType }),
+    });
+    const data = await response.json();
+    if (data.success) {
+      button.textContent = "Completed";
+      button.disabled = true;
+      button.classList.add("use");
+      tg.showAlert(`Задание выполнено! Вы заработали ${data.reward} VAI`);
+    } else {
+      tg.showAlert("Ошибка при выполнении задания.");
+    }
   }
 }
 
-// Инициализация
+// Инициализация при загрузке страницы
 document.addEventListener("DOMContentLoaded", async () => {
-  if (!(await TelegramManager.init())) return;
-
-  await loadTasksStatus();
-
-  const taskButtons = document.querySelectorAll(".lineTask button");
-  taskButtons.forEach((button) => {
-    const taskType = button.getAttribute("data-task-type");
-    button.onclick = () => startTask(button, taskType);
+  await updateButtonStates();
+  const buttons = document.querySelectorAll("button[data-task-type]");
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => handleButtonClick(button));
   });
 });
