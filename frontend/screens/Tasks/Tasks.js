@@ -13,7 +13,23 @@ const TASK_TYPES = {
   JOIN_BLUM: "join_blum",
 };
 
-// Загружаем статус заданий при инициализации
+// Маппинг URL для задач
+const taskUrls = {
+  join_community: "https://t.me/getvaitoken",
+  follow_twitter: "https://x.com/getvaiii",
+  add_stickerpack: "https://t.me/getvaitoken",
+  view_website: "https://getvault.space",
+  pass_test: "https://t.me/getvaitoken",
+  react_blum: "https://t.me/getvaitoken",
+  join_luck: "https://t.me/getvaitoken",
+  join_aphbt: "https://t.me/getvaitoken",
+  join_chloe: "https://t.me/getvaitoken",
+  join_suricat: "https://t.me/getvaitoken",
+  join_benzin: "https://t.me/getvaitoken",
+  join_blum: "https://t.me/getvaitoken",
+};
+
+// Загрузка статуса заданий при инициализации
 async function loadTasksStatus() {
   try {
     const userId = TelegramManager.getUserId();
@@ -32,7 +48,6 @@ async function loadTasksStatus() {
         const button = document.querySelector(`[data-task-type="${taskType}"]`);
         if (button) {
           button.disabled = true;
-          button.classList.add("use");
           button.classList.add("inactive-button");
           button.classList.remove("active-button");
         }
@@ -43,7 +58,7 @@ async function loadTasksStatus() {
   }
 }
 
-// Вспомогательные функции для работы с локальным хранилищем
+// Вспомогательные функции для локального хранилища
 function setPendingTask(taskType, url) {
   localStorage.setItem("pendingTask", JSON.stringify({ taskType, url }));
 }
@@ -57,7 +72,7 @@ function clearPendingTask() {
   localStorage.removeItem("pendingTask");
 }
 
-// Функция запуска задания
+// Запуск задачи
 async function startTask(button, url, taskType) {
   try {
     if (!button || !taskType) {
@@ -71,17 +86,12 @@ async function startTask(button, url, taskType) {
       return;
     }
 
-    // Отключаем кнопку временно
     button.disabled = true;
     button.classList.add("use");
 
-    // Сохраняем задание как "в процессе"
     setPendingTask(taskType, url);
+    window.Telegram.WebApp.openLink(url);
 
-    // Открываем ссылку
-    window.open(url, "_blank");
-
-    // На мобильных устройствах показываем инструкцию
     const isMobile =
       /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
         navigator.userAgent
@@ -99,7 +109,7 @@ async function startTask(button, url, taskType) {
   }
 }
 
-// Функция проверки и завершения задания
+// Завершение задачи
 async function completeTask(taskType) {
   try {
     const userId = TelegramManager.getUserId();
@@ -110,19 +120,13 @@ async function completeTask(taskType) {
 
     const response = await fetch(`${API_CONFIG.BASE_URL}/api/tasks/complete`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        userId,
-        taskType,
-      }),
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, taskType }),
     });
 
     const data = await response.json();
 
     if (response.ok) {
-      // Отключаем кнопку окончательно
       const button = document.querySelector(`[data-task-type="${taskType}"]`);
       if (button) {
         button.disabled = true;
@@ -130,12 +134,10 @@ async function completeTask(taskType) {
         button.classList.remove("active-button");
       }
 
-      // Обновляем баланс
       if (window.BalanceManager) {
         await window.BalanceManager.fetchBalance(userId);
       }
 
-      // Показываем попап с наградой
       window.Telegram.WebApp.showPopup({
         message: `You received ${data.reward} VAI!`,
         buttons: [{ type: "ok" }],
@@ -164,16 +166,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     await loadTasksStatus();
 
-    // Проверяем незавершенное задание
     const pendingTask = getPendingTask();
     if (pendingTask) {
       const isMobile =
         /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
           navigator.userAgent
         );
-
       if (isMobile) {
-        // На мобильных устройствах спрашиваем подтверждение
         window.Telegram.WebApp.showPopup(
           {
             message: `Did you complete the ${pendingTask.taskType} task?`,
@@ -185,11 +184,8 @@ document.addEventListener("DOMContentLoaded", async () => {
           async (buttonId) => {
             if (buttonId === "ok") {
               const success = await completeTask(pendingTask.taskType);
-              if (success) {
-                clearPendingTask();
-              }
+              if (success) clearPendingTask();
             } else {
-              // Если "No", оставляем задание в pending
               const button = document.querySelector(
                 `[data-task-type="${pendingTask.taskType}"]`
               );
@@ -201,11 +197,9 @@ document.addEventListener("DOMContentLoaded", async () => {
           }
         );
       } else {
-        // На десктопе автоматически проверяем (предполагаем, что пользователь вернулся)
         const success = await completeTask(pendingTask.taskType);
-        if (success) {
-          clearPendingTask();
-        } else {
+        if (success) clearPendingTask();
+        else {
           const button = document.querySelector(
             `[data-task-type="${pendingTask.taskType}"]`
           );
@@ -217,40 +211,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }
 
-    // Настраиваем кнопки
-    const taskButtons = {
-      join_community: "https://t.me/getvaitoken",
-      follow_twitter: "https://x.com/getvaiii",
-      view_website: "https://getvault.space",
-    };
-
-    Object.entries(taskButtons).forEach(([taskType, url]) => {
-      const buttons = document.querySelectorAll(`button[onclick*="${url}"]`);
-      buttons.forEach((button) => {
-        button.setAttribute("data-task-type", taskType);
-        button.onclick = () => startTask(button, url, taskType);
-      });
+    // Привязка кнопок задач
+    const taskButtons = document.querySelectorAll(".lineTask button");
+    taskButtons.forEach((button) => {
+      const taskType = button.getAttribute("data-task-type");
+      const url = taskUrls[taskType];
+      button.onclick = () => startTask(button, url, taskType);
     });
   } catch (error) {
     console.error("Initialization error:", error);
   }
 });
-
-// Остальные функции (showBlock1, showBlock2) остаются без изменений
-function showBlock1() {
-  document.getElementById("block1").classList.add("active");
-  document.getElementById("block2").classList.remove("active");
-  document.getElementById("button1").classList.add("tab-active");
-  document.getElementById("button1").classList.remove("tab-inactive");
-  document.getElementById("button2").classList.add("tab-inactive");
-  document.getElementById("button2").classList.remove("tab-active");
-}
-
-function showBlock2() {
-  document.getElementById("block2").classList.add("active");
-  document.getElementById("block1").classList.remove("active");
-  document.getElementById("button2").classList.add("tab-active");
-  document.getElementById("button2").classList.remove("tab-inactive");
-  document.getElementById("button1").classList.add("tab-inactive");
-  document.getElementById("button1").classList.remove("tab-active");
-}

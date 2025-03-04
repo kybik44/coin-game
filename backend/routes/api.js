@@ -737,128 +737,6 @@ router.get("/leaderboard", async (req, res) => {
   }
 });
 
-// Добавим новый роут для отладки
-router.get("/debug/referrals", async (req, res) => {
-  try {
-    const users = await db.all("SELECT * FROM users");
-    const referrals = await db.all("SELECT * FROM referrals");
-
-    res.json({
-      users,
-      referrals,
-      counts: {
-        users: users.length,
-        referrals: referrals.length,
-      },
-    });
-  } catch (error) {
-    console.error("[Debug] Error:", error);
-    res.status(500).json({
-      error: "Internal server error",
-      details: error.message,
-    });
-  }
-});
-
-// Только для тестирования!
-router.post("/debug/reset-referrals", async (req, res) => {
-  try {
-    await db.run("BEGIN TRANSACTION");
-
-    // Сохраняем текущее состояние
-    const before = {
-      users: await db.all("SELECT * FROM users"),
-      referrals: await db.all("SELECT * FROM referrals"),
-    };
-
-    // Очищаем таблицы
-    await db.run("DELETE FROM referrals");
-    await db.run("UPDATE users SET referrer_id = NULL, balance = 1000");
-
-    await db.run("COMMIT");
-
-    res.json({
-      success: true,
-      message: "Referral system reset",
-      before,
-    });
-  } catch (error) {
-    await db.run("ROLLBACK");
-    res.status(500).json({
-      error: "Reset failed",
-      details: error.message,
-    });
-  }
-});
-
-// Только для тестирования!
-router.post("/debug/reset-database", async (req, res) => {
-  try {
-    await db.run("BEGIN TRANSACTION");
-
-    // Сохраняем текущее состояние
-    const before = {
-      users: await db.all("SELECT * FROM users"),
-      referrals: await db.all("SELECT * FROM referrals"),
-    };
-
-    // Очищаем таблицы
-    await db.run("DELETE FROM referrals");
-    await db.run("DELETE FROM users");
-
-    await db.run("COMMIT");
-
-    console.log("[Debug] Database reset completed");
-
-    res.json({
-      success: true,
-      message: "Database reset successfully",
-      before,
-    });
-  } catch (error) {
-    await db.run("ROLLBACK");
-    console.error("[Debug] Reset error:", error);
-    res.status(500).json({
-      error: "Reset failed",
-      details: error.message,
-    });
-  }
-});
-
-// Добавьте этот роут для проверки содержимого базы данных
-router.get("/debug/db-state", async (req, res) => {
-  try {
-    console.log("[Debug] Checking database state...");
-
-    // Проверяем структуру таблиц
-    const tables = await db.all(
-      "SELECT name FROM sqlite_master WHERE type='table'"
-    );
-    console.log("[Debug] Tables:", tables);
-
-    // Получаем всех пользователей
-    const users = await db.all("SELECT * FROM users");
-    console.log("[Debug] Users:", users);
-
-    // Получаем все рефералы
-    const referrals = await db.all("SELECT * FROM referrals");
-    console.log("[Debug] Referrals:", referrals);
-
-    res.json({
-      tables,
-      users,
-      referrals,
-      dbPath: config.dbPath,
-    });
-  } catch (error) {
-    console.error("[Debug] Error:", error);
-    res.status(500).json({
-      error: "Database check failed",
-      details: error.message,
-    });
-  }
-});
-
 // Добавляем новый роут для отметки просмотра сторис
 router.post("/stories/mark-shown", async (req, res) => {
   try {
@@ -882,7 +760,6 @@ router.post("/stories/mark-shown", async (req, res) => {
   }
 });
 
-// Выполнение задания
 router.post("/tasks/complete", async (req, res) => {
   try {
     const { userId, taskType } = req.body;
@@ -893,7 +770,6 @@ router.post("/tasks/complete", async (req, res) => {
         .json({ error: "User ID and task type are required" });
     }
 
-    // Проверяем, не выполнено ли уже задание
     const existingTask = await db.get(
       "SELECT * FROM completed_tasks WHERE user_id = ? AND task_type = ?",
       [userId, taskType]
@@ -903,7 +779,6 @@ router.post("/tasks/complete", async (req, res) => {
       return res.status(400).json({ error: "Task already completed" });
     }
 
-    // Определяем награду за задание
     const taskRewards = {
       join_community: 500,
       follow_twitter: 500,
@@ -924,24 +799,20 @@ router.post("/tasks/complete", async (req, res) => {
       return res.status(400).json({ error: "Invalid task type" });
     }
 
-    // Начинаем транзакцию
     await db.run("BEGIN TRANSACTION");
 
     try {
-      // Записываем выполнение задания
       await db.run(
         `INSERT INTO completed_tasks (user_id, task_type, completed_at, reward) 
          VALUES (?, ?, ?, ?)`,
         [userId, taskType, Date.now(), reward]
       );
 
-      // Обновляем баланс пользователя
       await db.run(
         "UPDATE users SET balance = balance + ? WHERE telegram_id = ?",
         [reward, userId]
       );
 
-      // Получаем обновленный баланс
       const user = await db.get(
         "SELECT balance FROM users WHERE telegram_id = ?",
         [userId]
@@ -960,10 +831,9 @@ router.post("/tasks/complete", async (req, res) => {
     }
   } catch (error) {
     console.error("[Tasks] Error:", error);
-    res.status(500).json({
-      error: "Internal server error",
-      details: error.message,
-    });
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
   }
 });
 
@@ -985,10 +855,9 @@ router.get("/tasks/status/:userId", async (req, res) => {
     });
   } catch (error) {
     console.error("[Tasks Status] Error:", error);
-    res.status(500).json({
-      error: "Internal server error",
-      details: error.message,
-    });
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
   }
 });
 
