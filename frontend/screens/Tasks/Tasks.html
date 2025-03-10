@@ -12,6 +12,32 @@
     <title>Tasks</title>
     <link rel="stylesheet" href="../../shared/styles/common.css" />
     <link rel="stylesheet" href="Tasks.css" />
+    <style>
+      .coming-soon {
+        text-align: center;
+        padding: 40px 20px;
+        color: #fff;
+        font-family: Arial, sans-serif;
+        width: -webkit-fill-available;
+      }
+      .coming-soon h2 {
+        font-size: 24px;
+        margin-bottom: 10px;
+        color: #fff;
+        font-weight: 700;
+      }
+      .coming-soon p {
+        font-size: 16px;
+        color: #888;
+        max-width: 300px;
+        margin: 0 auto;
+      }
+      .coming-soon .emoji {
+        font-size: 32px;
+        margin-top: 20px;
+        display: block;
+      }
+    </style>
   </head>
   <body>
     <div id="main-container" class="main-container">
@@ -88,7 +114,6 @@
             </div>
             <button data-task-type="follow_twitter">Start</button>
           </div>
-
           <div class="lineTask">
             <div class="firstHalf">
               <img src="../../images/img_3.png" />
@@ -132,67 +157,13 @@
         </div>
 
         <div id="block2" class="block">
-          <div class="lineTask">
-            <div class="firstHalf">
-              <img src="../../images/img_6.png" />
-              <div class="left">
-                <span>Join LUCK</span>
-                <span class="grey">+ 1000 VAI</span>
-              </div>
-            </div>
-            <button data-task-type="join_luck">Follow</button>
-          </div>
-          <div class="lineTask">
-            <div class="firstHalf">
-              <img src="../../images/img_8.png" />
-              <div class="left">
-                <span>Join APHBT</span>
-                <span class="grey">+ 1000 VAI</span>
-              </div>
-            </div>
-            <button data-task-type="join_aphbt">Follow</button>
-          </div>
-          <div class="lineTask">
-            <div class="firstHalf">
-              <img src="../../images/icon1.png" />
-              <div class="left">
-                <span>Join Chloe</span>
-                <span class="grey">+ 1000 VAI</span>
-              </div>
-            </div>
-            <button data-task-type="join_chloe">Follow</button>
-          </div>
-          <div class="lineTask">
-            <div class="firstHalf">
-              <img src="../../images/icon2.png" />
-              <div class="left">
-                <span>Join Suricat</span>
-                <span class="grey">+ 1000 VAI</span>
-              </div>
-            </div>
-            <button data-task-type="join_suricat">Follow</button>
-          </div>
-          <div class="lineTask">
-            <div class="firstHalf">
-              <img src="../../images/icon3.png" />
-              <div class="left">
-                <span>Join Benzin</span>
-                <span class="grey">+ 1000 VAI</span>
-              </div>
-            </div>
-            <button data-task-type="join_benzin">Follow</button>
-          </div>
-          <div class="lineTask">
-            <div class="firstHalf">
-              <img src="../../images/img_5.png" />
-              <div class="left">
-                <span>Join Blum</span>
-                <span class="grey">+ 1000 VAI</span>
-              </div>
-            </div>
-            <button data-task-type="join_blum">Follow</button>
+          <div class="coming-soon">
+            <h2>Still in Development</h2>
+            <p>Partners will be here soon, stay tuned for updates!</p>
+            <span class="emoji">🚀</span>
           </div>
         </div>
+
         <button
           class="white-button back-button"
           onclick="window.history.back()"
@@ -221,14 +192,14 @@
       }
     </script>
     <script>
-      (function () {
-        var script = document.createElement("script");
-        script.src = "https://unpkg.com/eruda";
-        document.body.append(script);
-        script.onload = function () {
-          eruda.init();
-        };
-      })();
+      // (function () {
+      //   var script = document.createElement("script");
+      //   script.src = "https://unpkg.com/eruda";
+      //   document.body.append(script);
+      //   script.onload = function () {
+      //     eruda.init();
+      //   };
+      // })();
     </script>
     <script src="../../shared/js/api.js"></script>
     <script src="../../shared/js/components.js"></script>

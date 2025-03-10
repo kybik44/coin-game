@@ -203,39 +203,26 @@ async function updateCurrentUserData() {
         console.error("[Balance] BalanceManager not found");
         balanceElement.textContent = "0 VAI";
       } else {
-        try {
-          console.log("[Balance] Fetching balance for user:", user.id);
-          const balance = await window.BalanceManager.fetchBalance(user.id);
-          console.log("[Balance] Received balance:", balance);
-          balanceElement.textContent = `${balance.toLocaleString()} VAI`;
-        } catch (balanceError) {
-          console.error("[Balance] Error fetching balance:", balanceError);
-          balanceElement.textContent = "0 VAI";
-        }
+        const balance = await window.BalanceManager.fetchBalance(user.id);
+        balanceElement.textContent = `${balance.toLocaleString()} VAI`;
       }
     }
 
     const positionResponse = await fetch(
       `${API_CONFIG.BASE_URL}/api/users/position/${user.id}`
     );
-    console.log("[Position] Response status:", positionResponse.status);
-
-    if (!positionResponse.ok)
+    if (!positionResponse.ok) {
       throw new Error(`Failed to fetch position: ${positionResponse.status}`);
+    }
 
     const positionData = await positionResponse.json();
     console.log("[Position] Data:", positionData);
 
     const positionElement = document.getElementById("current-user-position");
-    if (positionElement) {
-      if (positionData && typeof positionData.position === "number") {
-        positionElement.textContent = `#${(
-          18042 - positionData.position
-        ).toLocaleString()}`;
-      } else {
-        positionElement.textContent = "#--";
-        console.error("Invalid position data received:", positionData);
-      }
+    if (positionElement && positionData.position) {
+      positionElement.textContent = `#${positionData.position.toLocaleString()}`;
+    } else {
+      positionElement.textContent = "#--";
     }
 
     const usersSummary = document.querySelector(".users-count");
@@ -244,21 +231,15 @@ async function updateCurrentUserData() {
     }
 
     updateStats({
-      totalUsers: positionData.total || 18042,
+      totalUsers: positionData.total || 18142, // Используем 18,142 как базовое значение
       userPosition: positionData.position || 0,
       userGrade: "junior",
     });
   } catch (error) {
     console.error("Error updating current user data:", error);
-    const elements = {
-      "current-user-name": "Anonymous",
-      "current-user-balance": "0 VAI",
-      "current-user-position": "#--",
-    };
-    Object.entries(elements).forEach(([id, value]) => {
-      const element = document.getElementById(id);
-      if (element) element.textContent = value;
-    });
+    document.getElementById("current-user-name").textContent = "Anonymous";
+    document.getElementById("current-user-balance").textContent = "0 VAI";
+    document.getElementById("current-user-position").textContent = "#--";
   }
 }
 
@@ -266,17 +247,12 @@ async function updateCurrentUserData() {
 async function updateLeaderboard() {
   try {
     const response = await fetch(`${API_CONFIG.BASE_URL}/api/leaderboard`);
-    console.log("[Leaderboard] Response status:", response.status);
-
-    if (!response.ok)
+    if (!response.ok) {
       throw new Error(`Failed to fetch leaderboard: ${response.status}`);
+    }
 
     const data = await response.json();
-    console.log("[Leaderboard] Data:", data);
-
-    const leaderboardContainer = document.querySelector(
-      ".leaderboard-container"
-    );
+    const leaderboardContainer = document.querySelector(".leaderboard-container");
     if (!leaderboardContainer) return;
 
     leaderboardContainer.innerHTML = "";
@@ -311,9 +287,7 @@ async function updateLeaderboard() {
     });
   } catch (error) {
     console.error("Error updating leaderboard:", error);
-    const leaderboardContainer = document.querySelector(
-      ".leaderboard-container"
-    );
+    const leaderboardContainer = document.querySelector(".leaderboard-container");
     if (leaderboardContainer) {
       leaderboardContainer.innerHTML = `
         <div class="error-message">

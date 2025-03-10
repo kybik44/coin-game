@@ -131,7 +131,7 @@ router.post("/claim", async (req, res) => {
     }
 
     // Начисляем награду
-    const reward = 100;
+    const reward = 1000;
     const newBalance = user.balance + reward;
 
     await db.run(
@@ -647,7 +647,7 @@ router.get("/users/position/:userId", async (req, res) => {
     const { userId } = req.params;
     console.log("[Position] Getting position for user:", userId);
 
-    // Получаем реального пользователя
+    // Получаем данные текущего пользователя
     const user = await db.get(
       "SELECT telegram_id, balance FROM users WHERE telegram_id = ?",
       [userId]
@@ -661,19 +661,27 @@ router.get("/users/position/:userId", async (req, res) => {
     }
 
     // Получаем всех реальных пользователей
-    const realUsers = await db.all("SELECT telegram_id, balance FROM users");
+    const realUsers = await db.all(
+      "SELECT telegram_id, balance FROM users ORDER BY balance DESC"
+    );
 
-    // Объединяем реальных и моковых пользователей
-    const allUsers = [...realUsers, ...mockUsers];
+    // Форматируем реальных пользователей
+    const formattedRealUsers = realUsers.map((u) => ({
+      telegram_id: u.telegram_id,
+      balance: u.balance,
+    }));
+
+    // Объединяем с mockUsers
+    const allUsers = [...formattedRealUsers, ...mockUsers];
 
     // Сортируем по балансу по убыванию
     allUsers.sort((a, b) => b.balance - a.balance);
 
-    // Находим позицию пользователя
+    // Находим позицию текущего пользователя
     const position = allUsers.findIndex((u) => u.telegram_id === userId) + 1;
 
-    // Базовое количество пользователей (18,042) + реальные пользователи
-    const totalUsers = 18042 + realUsers.length;
+    // Виртуальное общее количество пользователей: 18,142 + число реальных пользователей
+    const totalUsers = 18142 + realUsers.length;
 
     console.log("[Position] Found position:", position);
 
@@ -695,12 +703,11 @@ router.get("/leaderboard", async (req, res) => {
   try {
     console.log("[Leaderboard] Getting leaderboard data");
 
-    // Получаем реальных пользователей
+    // Получаем всех реальных пользователей
     const realUsers = await db.all(`
       SELECT telegram_id, username, first_name, last_name, balance 
       FROM users 
-      ORDER BY balance DESC 
-      LIMIT 20
+      ORDER BY balance DESC
     `);
 
     // Форматируем реальных пользователей
@@ -713,15 +720,19 @@ router.get("/leaderboard", async (req, res) => {
       balance: user.balance,
     }));
 
-    // Объединяем с моковыми пользователями и сортируем
-    const allUsers = [...formattedRealUsers, ...mockUsers]
-      .sort((a, b) => b.balance - a.balance)
-      .slice(0, 20);
+    // Объединяем с mockUsers
+    const allUsers = [...formattedRealUsers, ...mockUsers];
 
-    console.log("[Leaderboard] Sending data:", allUsers);
+    // Сортируем по балансу по убыванию
+    allUsers.sort((a, b) => b.balance - a.balance);
+
+    // Берем топ-20
+    const top20 = allUsers.slice(0, 20);
+
+    console.log("[Leaderboard] Sending top 20:", top20);
 
     res.json({
-      leaderboard: allUsers.map((user, index) => ({
+      leaderboard: top20.map((user, index) => ({
         position: index + 1,
         telegram_id: user.telegram_id,
         username: user.username,
